@@ -1117,7 +1117,7 @@ public struct Row {
         return try! get(column)
     }
 
-    public func get<V: RiskyValue>(_ column: Expression<V>) throws -> V {
+    public func get<V: AnyValue>(_ column: Expression<V>) throws -> V {
         if let value = try get(Expression<V?>(column)) {
             return value
         } else {
@@ -1125,7 +1125,7 @@ public struct Row {
         }
     }
 
-    public func get<V: RiskyValue>(_ column: Expression<V?>) throws -> V? {
+    public func get<V: AnyValue>(_ column: Expression<V?>) throws -> V? {
         func valueAtIndex(_ idx: Int) throws -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
             return try V.fromDatatypeValue(value) as? V

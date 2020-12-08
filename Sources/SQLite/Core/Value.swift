@@ -31,7 +31,8 @@ public protocol Binding {}
 
 public protocol Number : Binding {}
 
-public protocol Value : Expressible { // extensions cannot have inheritance clauses
+/// - See `Value`: Safe value, not throwing when trying to get a value.
+public protocol AnyValue : Expressible {
 
     associatedtype ValueType = Self
 
@@ -39,10 +40,24 @@ public protocol Value : Expressible { // extensions cannot have inheritance clau
 
     static var declaredDatatype: String { get }
 
-    static func fromDatatypeValue(_ datatypeValue: Datatype) -> ValueType
-
     var datatypeValue: Datatype { get }
 
+    static func fromDatatypeValue(_ datatypeValue: Datatype) throws -> ValueType
+}
+
+public protocol Value : AnyValue { // extensions cannot have inheritance clauses
+
+    static func fromDatatypeValue(_ datatypeValue: Datatype) -> ValueType
+
+}
+
+extension Value {
+
+    public static func fromDatatypeValue(_ datatypeValue: Datatype) throws -> ValueType {
+        // Use the non-throwing variant by default.
+        return fromDatatypeValue(datatypeValue)
+    }
+    
 }
 
 extension Double : Number, Value {
