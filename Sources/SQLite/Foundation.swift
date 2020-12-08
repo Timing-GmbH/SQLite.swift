@@ -68,3 +68,23 @@ public var dateFormatter: DateFormatter = {
     formatter.timeZone = TimeZone(secondsFromGMT: 0)
     return formatter
 }()
+
+extension URL : RiskyValue {
+    public struct URLRiskyValueError: Error {}
+
+    public typealias Datatype = String
+
+    public var datatypeValue: String {
+        return absoluteString
+    }
+
+    public static var declaredDatatype: String {
+        return String.declaredDatatype
+    }
+
+    public static func fromDatatypeValue(_ datatypeValue: String) throws -> URL {
+        guard let url = URL(string: datatypeValue) else { throw URLRiskyValueError() }
+        return url
+    }
+
+}

@@ -108,6 +108,9 @@ extension ExpressionType {
 
 }
 
+// MARK: -
+// MARK: Value conformance
+
 extension ExpressionType where UnderlyingType : Value {
 
     public init(value: UnderlyingType) {
@@ -135,6 +138,38 @@ extension Value {
     }
 
 }
+
+// MARK: RiskyValue conformance
+
+extension ExpressionType where UnderlyingType : RiskyValue {
+
+    public init(value: UnderlyingType) {
+        self.init("?", [value.datatypeValue])
+    }
+
+}
+
+extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : RiskyValue {
+
+    public static var null: Self {
+        return self.init(value: nil)
+    }
+
+    public init(value: UnderlyingType.WrappedType?) {
+        self.init("?", [value?.datatypeValue])
+    }
+
+}
+
+extension RiskyValue {
+
+    public var expression: Expression<Void> {
+        return Expression(value: self).expression
+    }
+
+}
+
+// MARK: -
 
 public let rowid = Expression<Int64>("ROWID")
 
