@@ -1116,6 +1116,36 @@ public struct Row {
     public subscript<T : Value>(column: Expression<T?>) -> T? {
         return try! get(column)
     }
+
+    public func get<V: RiskyValue>(_ column: Expression<V>) throws -> V {
+        if let value = try get(Expression<V?>(column)) {
+            return value
+        } else {
+            throw QueryError.unexpectedNullValue(name: column.template)
+        }
+    }
+
+    public func get<V: RiskyValue>(_ column: Expression<V?>) throws -> V? {
+        func valueAtIndex(_ idx: Int) throws -> V? {
+            guard let value = values[idx] as? V.Datatype else { return nil }
+            return try V.fromDatatypeValue(value) as? V
+        }
+
+        guard let idx = columnNames[column.template] else {
+            let similar = Array(columnNames.keys).filter { $0.hasSuffix(".\(column.template)") }
+
+            switch similar.count {
+            case 0:
+                throw QueryError.noSuchColumn(name: column.template, columns: columnNames.keys.sorted())
+            case 1:
+                return try valueAtIndex(columnNames[similar[0]]!)
+            default:
+                throw QueryError.ambiguousColumn(name: column.template, similar: similar)
+            }
+        }
+
+        return try valueAtIndex(idx)
+    }
 }
 
 /// Determines the join operator for a query’s `JOIN` clause.
