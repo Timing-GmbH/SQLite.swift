@@ -70,6 +70,7 @@ public var dateFormatter: DateFormatter = {
 }()
 
 extension URL : RiskyValue {
+    
     public struct URLRiskyValueError: Error {}
 
     public typealias Datatype = String

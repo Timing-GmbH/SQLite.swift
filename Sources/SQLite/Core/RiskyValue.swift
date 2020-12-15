@@ -7,5 +7,7 @@
 //
 
 public protocol RiskyValue : Value {
+
     static func fromDatatypeValue(_ datatypeValue: Datatype) throws -> ValueType
+
 }
