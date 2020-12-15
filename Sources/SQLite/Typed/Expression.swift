@@ -111,7 +111,7 @@ extension ExpressionType {
 // MARK: -
 // MARK: Value conformance
 
-extension ExpressionType where UnderlyingType : Value {
+extension ExpressionType where UnderlyingType : SafeValue {
 
     public init(value: UnderlyingType) {
         self.init("?", [value.datatypeValue])
@@ -119,7 +119,7 @@ extension ExpressionType where UnderlyingType : Value {
 
 }
 
-extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : Value {
+extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.WrappedType : SafeValue {
 
     public static var null: Self {
         return self.init(value: nil)
@@ -131,7 +131,7 @@ extension ExpressionType where UnderlyingType : _OptionalType, UnderlyingType.Wr
 
 }
 
-extension Value {
+extension SafeValue {
 
     public var expression: Expression<Void> {
         return Expression(value: self).expression
@@ -173,10 +173,10 @@ extension RiskyValue {
 
 public let rowid = Expression<Int64>("ROWID")
 
-public func cast<T: Value, U: Value>(_ expression: Expression<T>) -> Expression<U> {
+public func cast<T: SafeValue, U: SafeValue>(_ expression: Expression<T>) -> Expression<U> {
     return Expression("CAST (\(expression.template) AS \(U.declaredDatatype))", expression.bindings)
 }
 
-public func cast<T: Value, U: Value>(_ expression: Expression<T?>) -> Expression<U?> {
+public func cast<T: SafeValue, U: SafeValue>(_ expression: Expression<T?>) -> Expression<U?> {
     return Expression("CAST (\(expression.template) AS \(U.declaredDatatype))", expression.bindings)
 }

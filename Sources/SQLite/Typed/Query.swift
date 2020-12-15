@@ -141,10 +141,10 @@ extension SchemaType {
     /// - Parameter all: A list of expressions to select.
     ///
     /// - Returns: A query with the given `SELECT` clause applied.
-    public func select<V : Value>(_ column: Expression<V>) -> ScalarQuery<V> {
+    public func select<V : SafeValue>(_ column: Expression<V>) -> ScalarQuery<V> {
         return select(false, [column])
     }
-    public func select<V : Value>(_ column: Expression<V?>) -> ScalarQuery<V?> {
+    public func select<V : SafeValue>(_ column: Expression<V?>) -> ScalarQuery<V?> {
         return select(false, [column])
     }
 
@@ -160,10 +160,10 @@ extension SchemaType {
     /// - Parameter column: A list of expressions to select.
     ///
     /// - Returns: A query with the given `SELECT DISTINCT` clause applied.
-    public func select<V : Value>(distinct column: Expression<V>) -> ScalarQuery<V> {
+    public func select<V : SafeValue>(distinct column: Expression<V>) -> ScalarQuery<V> {
         return select(true, [column])
     }
-    public func select<V : Value>(distinct column: Expression<V?>) -> ScalarQuery<V?> {
+    public func select<V : SafeValue>(distinct column: Expression<V?>) -> ScalarQuery<V?> {
         return select(true, [column])
     }
 
@@ -979,23 +979,23 @@ extension Connection {
         return columnNames
     }
 
-    public func scalar<V : Value>(_ query: ScalarQuery<V>) throws -> V {
+    public func scalar<V : SafeValue>(_ query: ScalarQuery<V>) throws -> V {
         let expression = query.expression
         return value(try scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : Value>(_ query: ScalarQuery<V?>) throws -> V.ValueType? {
+    public func scalar<V : SafeValue>(_ query: ScalarQuery<V?>) throws -> V.ValueType? {
         let expression = query.expression
         guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
         return V.fromDatatypeValue(value)
     }
 
-    public func scalar<V : Value>(_ query: Select<V>) throws -> V {
+    public func scalar<V : SafeValue>(_ query: Select<V>) throws -> V {
         let expression = query.expression
         return value(try scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : Value>(_ query: Select<V?>) throws ->  V.ValueType? {
+    public func scalar<V : SafeValue>(_ query: Select<V?>) throws ->  V.ValueType? {
         let expression = query.expression
         guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
         return V.fromDatatypeValue(value)
@@ -1079,7 +1079,7 @@ public struct Row {
     /// - Parameter column: An expression representing a column selected in a Query.
     ///
     /// - Returns: The value for the given column.
-    public func get<V: Value>(_ column: Expression<V>) throws -> V {
+    public func get<V: SafeValue>(_ column: Expression<V>) throws -> V {
         if let value = try get(Expression<V?>(column)) {
             return value
         } else {
@@ -1087,7 +1087,7 @@ public struct Row {
         }
     }
 
-    public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
+    public func get<V: SafeValue>(_ column: Expression<V?>) throws -> V? {
         func valueAtIndex(_ idx: Int) -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
             return V.fromDatatypeValue(value) as? V
@@ -1109,11 +1109,11 @@ public struct Row {
         return valueAtIndex(idx)
     }
 
-    public subscript<T : Value>(column: Expression<T>) -> T {
+    public subscript<T : SafeValue>(column: Expression<T>) -> T {
         return try! get(column)
     }
 
-    public subscript<T : Value>(column: Expression<T?>) -> T? {
+    public subscript<T : SafeValue>(column: Expression<T?>) -> T? {
         return try! get(column)
     }
 

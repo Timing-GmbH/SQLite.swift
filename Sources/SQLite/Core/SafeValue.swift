@@ -31,7 +31,10 @@ public protocol Binding {}
 
 public protocol Number : Binding {}
 
-public protocol Value : Expressible { // extensions cannot have inheritance clauses
+@available(*, deprecated, renamed: "SafeValue")
+public typealias Value = SafeValue
+
+public protocol SafeValue : Expressible { // extensions cannot have inheritance clauses
 
     associatedtype ValueType = Self
 
@@ -45,7 +48,7 @@ public protocol Value : Expressible { // extensions cannot have inheritance clau
 
 }
 
-extension Double : Number, Value {
+extension Double : Number, SafeValue {
 
     public static let declaredDatatype = "REAL"
 
@@ -59,7 +62,7 @@ extension Double : Number, Value {
 
 }
 
-extension Int64 : Number, Value {
+extension Int64 : Number, SafeValue {
 
     public static let declaredDatatype = "INTEGER"
 
@@ -73,7 +76,7 @@ extension Int64 : Number, Value {
 
 }
 
-extension String : Binding, Value {
+extension String : Binding, SafeValue {
 
     public static let declaredDatatype = "TEXT"
 
@@ -87,7 +90,7 @@ extension String : Binding, Value {
 
 }
 
-extension Blob : Binding, Value {
+extension Blob : Binding, SafeValue {
 
     public static let declaredDatatype = "BLOB"
 
@@ -103,7 +106,7 @@ extension Blob : Binding, Value {
 
 // MARK: -
 
-extension Bool : Binding, Value {
+extension Bool : Binding, SafeValue {
 
     public static var declaredDatatype = Int64.declaredDatatype
 
@@ -117,7 +120,7 @@ extension Bool : Binding, Value {
 
 }
 
-extension Int : Number, Value {
+extension Int : Number, SafeValue {
 
     public static var declaredDatatype = Int64.declaredDatatype
 

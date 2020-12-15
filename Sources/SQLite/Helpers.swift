@@ -123,10 +123,10 @@ func transcode(_ literal: Binding?) -> String {
     }
 }
 
-func value<A: Value>(_ v: Binding) -> A {
+func value<A: SafeValue>(_ v: Binding) -> A {
     return A.fromDatatypeValue(v as! A.Datatype) as! A
 }
 
-func value<A: Value>(_ v: Binding?) -> A {
+func value<A: SafeValue>(_ v: Binding?) -> A {
     return value(v!)
 }

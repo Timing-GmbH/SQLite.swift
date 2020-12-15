@@ -24,7 +24,7 @@
 
 import Foundation
 
-extension Data : Value {
+extension Data : SafeValue {
 
     public static var declaredDatatype: String {
         return Blob.declaredDatatype
@@ -42,7 +42,7 @@ extension Data : Value {
 
 }
 
-extension Date : Value {
+extension Date : SafeValue {
 
     public static var declaredDatatype: String {
         return String.declaredDatatype
