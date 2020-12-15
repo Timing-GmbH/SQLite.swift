@@ -31,20 +31,19 @@ public protocol Binding {}
 
 public protocol Number : Binding {}
 
-@available(*, deprecated, renamed: "SafeValue")
-public typealias Value = SafeValue
-
-public protocol SafeValue : Expressible { // extensions cannot have inheritance clauses
-
+public protocol Value : Expressible {
     associatedtype ValueType = Self
 
     associatedtype Datatype : Binding
 
     static var declaredDatatype: String { get }
 
-    static func fromDatatypeValue(_ datatypeValue: Datatype) -> ValueType
-
     var datatypeValue: Datatype { get }
+}
+
+public protocol SafeValue : Value { // extensions cannot have inheritance clauses
+
+    static func fromDatatypeValue(_ datatypeValue: Datatype) -> ValueType
 
 }
 
