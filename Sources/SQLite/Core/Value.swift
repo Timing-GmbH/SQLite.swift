@@ -22,7 +22,8 @@
 // THE SOFTWARE.
 //
 
-public protocol Value : Expressible {
+/// Introduces `fromDatatypeValue` in a shared way into `SafeValue` and `RiskyValue`.
+public protocol Datatyped {
 
     associatedtype ValueType = Self
 
@@ -31,4 +32,11 @@ public protocol Value : Expressible {
     static var declaredDatatype: String { get }
 
     var datatypeValue: Datatype { get }
+
+    static func fromDatatypeValue(_ datatypeValue: Datatype) throws -> ValueType
+
+}
+
+public protocol Value : Expressible, Datatyped {
+
 }

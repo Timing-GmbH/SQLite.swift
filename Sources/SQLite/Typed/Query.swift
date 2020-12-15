@@ -1079,7 +1079,7 @@ public struct Row {
     /// - Parameter column: An expression representing a column selected in a Query.
     ///
     /// - Returns: The value for the given column.
-    public func get<V: SafeValue>(_ column: Expression<V>) throws -> V {
+    public func get<V: Datatyped>(_ column: Expression<V>) throws -> V {
         if let value = try get(Expression<V?>(column)) {
             return value
         } else {
@@ -1087,47 +1087,10 @@ public struct Row {
         }
     }
 
-    public func get<V: SafeValue>(_ column: Expression<V?>) throws -> V? {
-        func valueAtIndex(_ idx: Int) -> V? {
-            guard let value = values[idx] as? V.Datatype else { return nil }
-            return V.fromDatatypeValue(value) as? V
-        }
-
-        guard let idx = columnNames[column.template] else {
-            let similar = Array(columnNames.keys).filter { $0.hasSuffix(".\(column.template)") }
-
-            switch similar.count {
-            case 0:
-                throw QueryError.noSuchColumn(name: column.template, columns: columnNames.keys.sorted())
-            case 1:
-                return valueAtIndex(columnNames[similar[0]]!)
-            default:
-                throw QueryError.ambiguousColumn(name: column.template, similar: similar)
-            }
-        }
-
-        return valueAtIndex(idx)
-    }
-
-    public subscript<T : SafeValue>(column: Expression<T>) -> T {
-        return try! get(column)
-    }
-
-    public subscript<T : SafeValue>(column: Expression<T?>) -> T? {
-        return try! get(column)
-    }
-
-    public func get<V: RiskyValue>(_ column: Expression<V>) throws -> V {
-        if let value = try get(Expression<V?>(column)) {
-            return value
-        } else {
-            throw QueryError.unexpectedNullValue(name: column.template)
-        }
-    }
-
-    public func get<V: RiskyValue>(_ column: Expression<V?>) throws -> V? {
+    public func get<V: Datatyped>(_ column: Expression<V?>) throws -> V? {
         func valueAtIndex(_ idx: Int) throws -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
+            // V.ValueType == V, so the case will succeed
             return try V.fromDatatypeValue(value) as? V
         }
 
@@ -1146,6 +1109,15 @@ public struct Row {
 
         return try valueAtIndex(idx)
     }
+
+    public subscript<T : SafeValue>(column: Expression<T>) -> T {
+        return try! get(column)
+    }
+
+    public subscript<T : SafeValue>(column: Expression<T?>) -> T? {
+        return try! get(column)
+    }
+
 }
 
 /// Determines the join operator for a query’s `JOIN` clause.

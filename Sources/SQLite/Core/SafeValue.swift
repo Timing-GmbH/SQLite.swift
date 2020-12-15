@@ -31,19 +31,19 @@ public protocol Binding {}
 
 public protocol Number : Binding {}
 
-public protocol Value : Expressible {
-    associatedtype ValueType = Self
-
-    associatedtype Datatype : Binding
-
-    static var declaredDatatype: String { get }
-
-    var datatypeValue: Datatype { get }
-}
-
 public protocol SafeValue : Value { // extensions cannot have inheritance clauses
 
     static func fromDatatypeValue(_ datatypeValue: Datatype) -> ValueType
+
+}
+
+extension SafeValue {
+
+    /// Automatically forward from throwing `Datatyped.fromDatatypeValue(_:)` to the safe method.
+    public static func fromDatatypeValue(_ datatypeValue: Datatype) throws -> ValueType {
+        // `as` needed to disambiguate which override to use
+        return self.fromDatatypeValue(datatypeValue) as ValueType
+    }
 
 }
 
