@@ -141,10 +141,10 @@ extension SchemaType {
     /// - Parameter all: A list of expressions to select.
     ///
     /// - Returns: A query with the given `SELECT` clause applied.
-    public func select<V : SafeValue>(_ column: Expression<V>) -> ScalarQuery<V> {
+    public func select<V : Value>(_ column: Expression<V>) -> ScalarQuery<V> {
         return select(false, [column])
     }
-    public func select<V : SafeValue>(_ column: Expression<V?>) -> ScalarQuery<V?> {
+    public func select<V : Value>(_ column: Expression<V?>) -> ScalarQuery<V?> {
         return select(false, [column])
     }
 
@@ -160,10 +160,10 @@ extension SchemaType {
     /// - Parameter column: A list of expressions to select.
     ///
     /// - Returns: A query with the given `SELECT DISTINCT` clause applied.
-    public func select<V : SafeValue>(distinct column: Expression<V>) -> ScalarQuery<V> {
+    public func select<V : Value>(distinct column: Expression<V>) -> ScalarQuery<V> {
         return select(true, [column])
     }
-    public func select<V : SafeValue>(distinct column: Expression<V?>) -> ScalarQuery<V?> {
+    public func select<V : Value>(distinct column: Expression<V?>) -> ScalarQuery<V?> {
         return select(true, [column])
     }
 

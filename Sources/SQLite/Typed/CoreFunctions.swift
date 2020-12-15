@@ -129,7 +129,7 @@ extension ExpressionType where UnderlyingType == Double? {
 
 }
 
-extension ExpressionType where UnderlyingType : SafeValue, UnderlyingType.Datatype == Int64 {
+extension ExpressionType where UnderlyingType : Value, UnderlyingType.Datatype == Int64 {
 
     /// Builds an expression representing the `random` function.
     ///
@@ -671,7 +671,7 @@ extension ExpressionType where UnderlyingType == String? {
 
 }
 
-extension Collection where Iterator.Element : SafeValue {
+extension Collection where Iterator.Element : Value {
 
     /// Builds a copy of the expression prepended with an `IN` check against the
     /// collection.
@@ -751,7 +751,7 @@ extension String {
 ///
 /// - Returns: A copy of the given expressions wrapped with the `ifnull`
 ///   function.
-public func ??<V : SafeValue>(optional: Expression<V?>, defaultValue: V) -> Expression<V> {
+public func ??<V : Value>(optional: Expression<V?>, defaultValue: V) -> Expression<V> {
     return Function.ifnull.wrap([optional, defaultValue])
 }
 
@@ -771,7 +771,7 @@ public func ??<V : SafeValue>(optional: Expression<V?>, defaultValue: V) -> Expr
 ///
 /// - Returns: A copy of the given expressions wrapped with the `ifnull`
 ///   function.
-public func ??<V : SafeValue>(optional: Expression<V?>, defaultValue: Expression<V>) -> Expression<V> {
+public func ??<V : Value>(optional: Expression<V?>, defaultValue: Expression<V>) -> Expression<V> {
     return Function.ifnull.wrap([optional, defaultValue])
 }
 
@@ -791,6 +791,6 @@ public func ??<V : SafeValue>(optional: Expression<V?>, defaultValue: Expression
 ///
 /// - Returns: A copy of the given expressions wrapped with the `ifnull`
 ///   function.
-public func ??<V : SafeValue>(optional: Expression<V?>, defaultValue: Expression<V?>) -> Expression<V> {
+public func ??<V : Value>(optional: Expression<V?>, defaultValue: Expression<V?>) -> Expression<V> {
     return Function.ifnull.wrap([optional, defaultValue])
 }
