@@ -39,7 +39,9 @@ class FoundationTests : SQLiteTestCase {
         let websites = Table("websites")
         let url = Expression<URL?>("url")
         let allWebsites = try Array(try db.prepare(websites)).map { try $0.unwrapOrThrow() }
-        XCTAssertThrowsError(try allWebsites[0].get(url))
+        XCTAssertThrowsError(try allWebsites[0].get(url)) {
+            XCTAssert($0 is URL.URLRiskyValueError)
+        }
         XCTAssertEqual(URL(string: "https://example.com")!,
                        try allWebsites[1].get(url))
     }
