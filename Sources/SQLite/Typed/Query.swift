@@ -1079,7 +1079,7 @@ public struct Row {
     /// - Parameter column: An expression representing a column selected in a Query.
     ///
     /// - Returns: The value for the given column.
-    public func get<V: Datatyped>(_ column: Expression<V>) throws -> V {
+    public func get<V: Value>(_ column: Expression<V>) throws -> V {
         if let value = try get(Expression<V?>(column)) {
             return value
         } else {
@@ -1087,7 +1087,7 @@ public struct Row {
         }
     }
 
-    public func get<V: Datatyped>(_ column: Expression<V?>) throws -> V? {
+    public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
         func valueAtIndex(_ idx: Int) throws -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
             // V.ValueType == V, so the case will succeed
