@@ -71,7 +71,9 @@ public var dateFormatter: DateFormatter = {
 
 extension URL : RiskyValue {
     
-    public struct URLRiskyValueError: Error {}
+    public enum URLRiskyValueError: Error {
+        case urlFromStringFailed(String)
+    }
 
     public typealias Datatype = String
 
@@ -84,7 +86,7 @@ extension URL : RiskyValue {
     }
 
     public static func fromDatatypeValue(_ datatypeValue: String) throws -> URL {
-        guard let url = URL(string: datatypeValue) else { throw URLRiskyValueError() }
+        guard let url = URL(string: datatypeValue) else { throw URLRiskyValueError.urlFromStringFailed(datatypeValue) }
         return url
     }
 
