@@ -130,3 +130,14 @@ func value<A: SafeValue>(_ v: Binding) -> A {
 func value<A: SafeValue>(_ v: Binding?) -> A {
     return value(v!)
 }
+
+// Using the name `value` here utterly confuses the compiler. Disambiguation with a different function name is
+// the simplest way out:
+
+func throwingValue<A: Value>(_ v: Binding) throws -> A {
+    return try A.fromDatatypeValue(v as! A.Datatype) as! A
+}
+
+func throwingValue<A: Value>(_ v: Binding?) throws -> A {
+    return try throwingValue(v!)
+}

@@ -979,26 +979,26 @@ extension Connection {
         return columnNames
     }
 
-    public func scalar<V : SafeValue>(_ query: ScalarQuery<V>) throws -> V {
+    public func scalar<V : Value>(_ query: ScalarQuery<V>) throws -> V {
         let expression = query.expression
-        return value(try scalar(expression.template, expression.bindings))
+        return try throwingValue(scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : SafeValue>(_ query: ScalarQuery<V?>) throws -> V.ValueType? {
+    public func scalar<V : Value>(_ query: ScalarQuery<V?>) throws -> V.ValueType? {
         let expression = query.expression
         guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
-        return V.fromDatatypeValue(value)
+        return try V.fromDatatypeValue(value)
     }
 
-    public func scalar<V : SafeValue>(_ query: Select<V>) throws -> V {
+    public func scalar<V : Value>(_ query: Select<V>) throws -> V {
         let expression = query.expression
-        return value(try scalar(expression.template, expression.bindings))
+        return try throwingValue(try scalar(expression.template, expression.bindings))
     }
 
-    public func scalar<V : SafeValue>(_ query: Select<V?>) throws ->  V.ValueType? {
+    public func scalar<V : Value>(_ query: Select<V?>) throws ->  V.ValueType? {
         let expression = query.expression
         guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
-        return V.fromDatatypeValue(value)
+        return try V.fromDatatypeValue(value)
     }
 
     public func pluck(_ query: QueryType) throws -> Row? {
