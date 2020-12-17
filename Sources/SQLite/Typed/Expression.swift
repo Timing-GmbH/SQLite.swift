@@ -143,10 +143,10 @@ extension Value {
 
 public let rowid = Expression<Int64>("ROWID")
 
-public func cast<T: SafeValue, U: SafeValue>(_ expression: Expression<T>) -> Expression<U> {
+public func cast<T: Value, U: Value>(_ expression: Expression<T>) -> Expression<U> {
     return Expression("CAST (\(expression.template) AS \(U.declaredDatatype))", expression.bindings)
 }
 
-public func cast<T: SafeValue, U: SafeValue>(_ expression: Expression<T?>) -> Expression<U?> {
+public func cast<T: Value, U: Value>(_ expression: Expression<T?>) -> Expression<U?> {
     return Expression("CAST (\(expression.template) AS \(U.declaredDatatype))", expression.bindings)
 }
