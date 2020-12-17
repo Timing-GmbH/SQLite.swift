@@ -104,7 +104,7 @@ public func +<V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<V?> where V.
 public func +<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<V> where V.Datatype : Number {
     return Operator.plus.infix(lhs, rhs)
 }
-public func +<V: SafeValue>(lhs: V, rhs: Expression<V?>) -> Expression<V?> where V.Datatype : Number {
+public func +<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<V?> where V.Datatype : Number {
     return Operator.plus.infix(lhs, rhs)
 }
 
@@ -129,7 +129,7 @@ public func -<V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<V?> where V.
 public func -<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<V> where V.Datatype : Number {
     return Operator.minus.infix(lhs, rhs)
 }
-public func -<V: SafeValue>(lhs: V, rhs: Expression<V?>) -> Expression<V?> where V.Datatype : Number {
+public func -<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<V?> where V.Datatype : Number {
     return Operator.minus.infix(lhs, rhs)
 }
 
@@ -154,7 +154,7 @@ public func *<V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<V?> where V.
 public func *<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<V> where V.Datatype : Number {
     return Operator.mul.infix(lhs, rhs)
 }
-public func *<V: SafeValue>(lhs: V, rhs: Expression<V?>) -> Expression<V?> where V.Datatype : Number {
+public func *<V: Value>(lhs: V, rhs: Expression<V?>) -> Expression<V?> where V.Datatype : Number {
     return Operator.mul.infix(lhs, rhs)
 }
 
@@ -179,7 +179,7 @@ public func /<V : Value>(lhs: Expression<V?>, rhs: V) -> Expression<V?> where V.
 public func /<V : Value>(lhs: V, rhs: Expression<V>) -> Expression<V> where V.Datatype : Number {
     return Operator.div.infix(lhs, rhs)
 }
-public func /<V: SafeValue>(lhs: V, rhs: Expression<V?>) -> Expression<V?> where V.Datatype : Number {
+public func /<V : Value>(lhs: V, rhs: Expression<V?>) -> Expression<V?> where V.Datatype : Number {
     return Operator.div.infix(lhs, rhs)
 }
 
