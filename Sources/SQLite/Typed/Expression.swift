@@ -108,6 +108,9 @@ extension ExpressionType {
 
 }
 
+// MARK: -
+// MARK: Value conformance
+
 extension ExpressionType where UnderlyingType : Value {
 
     public init(value: UnderlyingType) {
@@ -135,6 +138,8 @@ extension Value {
     }
 
 }
+
+// MARK: -
 
 public let rowid = Expression<Int64>("ROWID")
 

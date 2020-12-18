@@ -123,10 +123,42 @@ func transcode(_ literal: Binding?) -> String {
     }
 }
 
-func value<A: Value>(_ v: Binding) -> A {
+func value<A: SafeValue>(_ v: Binding) -> A {
     return A.fromDatatypeValue(v as! A.Datatype) as! A
 }
 
-func value<A: Value>(_ v: Binding?) -> A {
+func value<A: SafeValue>(_ v: Binding?) -> A {
     return value(v!)
+}
+
+// Using the name `value` here utterly confuses the compiler. Disambiguation with a different function name is
+// the simplest way out:
+
+enum ThrowingValueUnpackingError: Error {
+    case castingToExpectedDatatypeFailed(value: Any, expectedDatatypeName: String)
+    case castingDatatypeValueFailed(datatypeName: String, expectedTypeName: String)
+    case optionalValueMissing(typeName: String)
+}
+
+func throwingValue<A: Value>(_ v: Binding) throws -> A {
+    // All errors raised here are programmer errors
+    guard let datatypeValue = v as? A.Datatype else {
+        throw ThrowingValueUnpackingError.castingToExpectedDatatypeFailed(
+            value: v,
+            expectedDatatypeName: String(describing: A.Datatype.self))
+    }
+    let value = try A.fromDatatypeValue(datatypeValue)
+    guard let unpackedValue = value as? A else {
+        throw ThrowingValueUnpackingError.castingDatatypeValueFailed(
+            datatypeName: String(describing: type(of: value)),
+            expectedTypeName: String(describing: A.self))
+    }
+    return unpackedValue
+}
+
+func throwingValue<A: Value>(_ v: Binding?) throws -> A {
+    guard let value = v else {
+        throw ThrowingValueUnpackingError.optionalValueMissing(typeName: String(describing: A.self))
+    }
+    return try throwingValue(value)
 }

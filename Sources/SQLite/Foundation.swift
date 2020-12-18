@@ -24,7 +24,7 @@
 
 import Foundation
 
-extension Data : Value {
+extension Data : SafeValue {
 
     public static var declaredDatatype: String {
         return Blob.declaredDatatype
@@ -42,7 +42,7 @@ extension Data : Value {
 
 }
 
-extension Date : Value {
+extension Date : SafeValue {
 
     public static var declaredDatatype: String {
         return String.declaredDatatype
@@ -68,3 +68,26 @@ public var dateFormatter: DateFormatter = {
     formatter.timeZone = TimeZone(secondsFromGMT: 0)
     return formatter
 }()
+
+extension URL : RiskyValue {
+    
+    public enum URLRiskyValueError: Error {
+        case urlFromStringFailed(String)
+    }
+
+    public typealias Datatype = String
+
+    public var datatypeValue: String {
+        return absoluteString
+    }
+
+    public static var declaredDatatype: String {
+        return String.declaredDatatype
+    }
+
+    public static func fromDatatypeValue(_ datatypeValue: String) throws -> URL {
+        guard let url = URL(string: datatypeValue) else { throw URLRiskyValueError.urlFromStringFailed(datatypeValue) }
+        return url
+    }
+
+}

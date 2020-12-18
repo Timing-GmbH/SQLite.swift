@@ -981,24 +981,24 @@ extension Connection {
 
     public func scalar<V : Value>(_ query: ScalarQuery<V>) throws -> V {
         let expression = query.expression
-        return value(try scalar(expression.template, expression.bindings))
+        return try throwingValue(scalar(expression.template, expression.bindings))
     }
 
     public func scalar<V : Value>(_ query: ScalarQuery<V?>) throws -> V.ValueType? {
         let expression = query.expression
         guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
-        return V.fromDatatypeValue(value)
+        return try V.fromDatatypeValue(value)
     }
 
     public func scalar<V : Value>(_ query: Select<V>) throws -> V {
         let expression = query.expression
-        return value(try scalar(expression.template, expression.bindings))
+        return try throwingValue(try scalar(expression.template, expression.bindings))
     }
 
     public func scalar<V : Value>(_ query: Select<V?>) throws ->  V.ValueType? {
         let expression = query.expression
         guard let value = try scalar(expression.template, expression.bindings) as? V.Datatype else { return nil }
-        return V.fromDatatypeValue(value)
+        return try V.fromDatatypeValue(value)
     }
 
     public func pluck(_ query: QueryType) throws -> Row? {
@@ -1088,9 +1088,10 @@ public struct Row {
     }
 
     public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
-        func valueAtIndex(_ idx: Int) -> V? {
+        func valueAtIndex(_ idx: Int) throws -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
-            return V.fromDatatypeValue(value) as? V
+            // V.ValueType == V, so the case will succeed
+            return try V.fromDatatypeValue(value) as? V
         }
 
         guard let idx = columnNames[column.template] else {
@@ -1100,22 +1101,23 @@ public struct Row {
             case 0:
                 throw QueryError.noSuchColumn(name: column.template, columns: columnNames.keys.sorted())
             case 1:
-                return valueAtIndex(columnNames[similar[0]]!)
+                return try valueAtIndex(columnNames[similar[0]]!)
             default:
                 throw QueryError.ambiguousColumn(name: column.template, similar: similar)
             }
         }
 
-        return valueAtIndex(idx)
+        return try valueAtIndex(idx)
     }
 
-    public subscript<T : Value>(column: Expression<T>) -> T {
+    public subscript<T : SafeValue>(column: Expression<T>) -> T {
         return try! get(column)
     }
 
-    public subscript<T : Value>(column: Expression<T?>) -> T? {
+    public subscript<T : SafeValue>(column: Expression<T?>) -> T? {
         return try! get(column)
     }
+
 }
 
 /// Determines the join operator for a query’s `JOIN` clause.
