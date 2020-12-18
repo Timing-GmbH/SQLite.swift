@@ -138,6 +138,13 @@ func throwingValue<A: Value>(_ v: Binding) throws -> A {
     return try A.fromDatatypeValue(v as! A.Datatype) as! A
 }
 
+enum ValueUnpackingError: Error {
+    case optionalValueMissing(typeName: String)
+}
+
 func throwingValue<A: Value>(_ v: Binding?) throws -> A {
-    return try throwingValue(v!)
+    guard let v = v else {
+        throw ValueUnpackingError.optionalValueMissing(typeName: String(describing: A.self))
+    }
+    return try throwingValue(v)
 }
