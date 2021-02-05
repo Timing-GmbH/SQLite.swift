@@ -48,10 +48,12 @@ extension Date : SafeValue {
         return Double.declaredDatatype
     }
 
+    /// - Parameter doubleValue: Time interval since 1970 (Unix Epoch).
     public static func fromDatatypeValue(_ doubleValue: Double) -> Date {
         return Date(timeIntervalSince1970: doubleValue)
     }
 
+    /// Time interval since 1970 (Unix Epoch).
     public var datatypeValue: Double {
         return timeIntervalSince1970
     }
