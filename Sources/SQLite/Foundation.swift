@@ -45,15 +45,15 @@ extension Data : SafeValue {
 extension Date : SafeValue {
 
     public static var declaredDatatype: String {
-        return String.declaredDatatype
+        return Double.declaredDatatype
     }
 
-    public static func fromDatatypeValue(_ stringValue: String) -> Date {
-        return dateFormatter.date(from: stringValue)!
+    public static func fromDatatypeValue(_ doubleValue: Double) -> Date {
+        return Date(timeIntervalSince1970: doubleValue)
     }
 
-    public var datatypeValue: String {
-        return dateFormatter.string(from: self)
+    public var datatypeValue: Double {
+        return timeIntervalSince1970
     }
 
 }
