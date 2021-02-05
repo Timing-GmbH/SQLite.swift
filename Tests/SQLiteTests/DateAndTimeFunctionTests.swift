@@ -49,18 +49,18 @@ class DateExtensionTests : XCTestCase {
 
 class DateExpressionTests : XCTestCase {
     func test_date() {
-        AssertSQL("date(\"date\")", date.date)
+        AssertSQL("date(\"date\", 'unixepoch')", date.date)
     }
 
     func test_time() {
-        AssertSQL("time(\"date\")", date.time)
+        AssertSQL("time(\"date\", 'unixepoch')", date.time)
     }
 
     func test_datetime() {
-        AssertSQL("datetime(\"date\")", date.datetime)
+        AssertSQL("datetime(\"date\", 'unixepoch')", date.datetime)
     }
 
     func test_julianday() {
-        AssertSQL("julianday(\"date\")", date.julianday)
+        AssertSQL("julianday(\"date\", 'unixepoch')", date.julianday)
     }
 }

@@ -100,18 +100,18 @@ public var dateFormatter: DateFormatter = {
 
 extension Expression where UnderlyingType == Date {
     public var date: Expression<Date> {
-        return Expression<Date>("date(\(template))", bindings)
+        return Expression<Date>("date(\(template), 'unixepoch')", bindings)
     }
 
     public var time: Expression<Date> {
-        return Expression<Date>("time(\(template))", bindings)
+        return Expression<Date>("time(\(template), 'unixepoch')", bindings)
     }
 
     public var datetime: Expression<Date> {
-        return Expression<Date>("datetime(\(template))", bindings)
+        return Expression<Date>("datetime(\(template), 'unixepoch')", bindings)
     }
 
     public var julianday: Expression<Date> {
-        return Expression<Date>("julianday(\(template))", bindings)
+        return Expression<Date>("julianday(\(template), 'unixepoch')", bindings)
     }
 }
