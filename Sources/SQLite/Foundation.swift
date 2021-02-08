@@ -45,29 +45,20 @@ extension Data : SafeValue {
 extension Date : SafeValue {
 
     public static var declaredDatatype: String {
-        return String.declaredDatatype
+        return Double.declaredDatatype
     }
 
-    public static func fromDatatypeValue(_ stringValue: String) -> Date {
-        return dateFormatter.date(from: stringValue)!
+    /// - Parameter doubleValue: Time interval since 1970 (Unix Epoch).
+    public static func fromDatatypeValue(_ doubleValue: Double) -> Date {
+        return Date(timeIntervalSince1970: doubleValue)
     }
 
-    public var datatypeValue: String {
-        return dateFormatter.string(from: self)
+    /// Time interval since 1970 (Unix Epoch).
+    public var datatypeValue: Double {
+        return timeIntervalSince1970
     }
 
 }
-
-/// A global date formatter used to serialize and deserialize `NSDate` objects.
-/// If multiple date formats are used in an application’s database(s), use a
-/// custom `Value` type per additional format.
-public var dateFormatter: DateFormatter = {
-    let formatter = DateFormatter()
-    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
-    formatter.locale = Locale(identifier: "en_US_POSIX")
-    formatter.timeZone = TimeZone(secondsFromGMT: 0)
-    return formatter
-}()
 
 extension URL : RiskyValue {
     
