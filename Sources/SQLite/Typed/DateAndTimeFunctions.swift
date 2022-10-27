@@ -32,23 +32,23 @@ import Foundation
 public class DateFunctions {
     /// The date() function returns the date in this format: YYYY-MM-DD.
     public static func date(_ timestring: String, _ modifiers: String...) -> Expression<Date?> {
-        return timefunction("date", timestring: timestring, modifiers: modifiers)
+        timefunction("date", timestring: timestring, modifiers: modifiers)
     }
 
     /// The time() function returns the time as HH:MM:SS.
     public static func time(_ timestring: String, _ modifiers: String...) -> Expression<Date?> {
-        return timefunction("time", timestring: timestring, modifiers: modifiers)
+        timefunction("time", timestring: timestring, modifiers: modifiers)
     }
 
     /// The datetime() function returns "YYYY-MM-DD HH:MM:SS".
     public static func datetime(_ timestring: String, _ modifiers: String...) -> Expression<Date?> {
-        return timefunction("datetime", timestring: timestring, modifiers: modifiers)
+        timefunction("datetime", timestring: timestring, modifiers: modifiers)
     }
 
     /// The julianday() function returns the Julian day -
     /// the number of days since noon in Greenwich on November 24, 4714 B.C.
     public static func julianday(_ timestring: String, _ modifiers: String...) -> Expression<Date?> {
-        return timefunction("julianday", timestring: timestring, modifiers: modifiers)
+        timefunction("julianday", timestring: timestring, modifiers: modifiers)
     }
 
     ///  The strftime() routine returns the date formatted according to the format string specified as the first argument.
@@ -71,19 +71,19 @@ public class DateFunctions {
 
 extension Date {
     public var date: Expression<Date?> {
-        return DateFunctions.date(dateFormatter.string(from: self))
+        DateFunctions.date(dateFormatter.string(from: self))
     }
 
     public var time: Expression<Date?> {
-        return DateFunctions.time(dateFormatter.string(from: self))
+        DateFunctions.time(dateFormatter.string(from: self))
     }
 
     public var datetime: Expression<Date?> {
-        return DateFunctions.datetime(dateFormatter.string(from: self))
+        DateFunctions.datetime(dateFormatter.string(from: self))
     }
 
     public var julianday: Expression<Date?> {
-        return DateFunctions.julianday(dateFormatter.string(from: self))
+        DateFunctions.julianday(dateFormatter.string(from: self))
     }
 }
 
@@ -100,18 +100,18 @@ public var dateFormatter: DateFormatter = {
 
 extension Expression where UnderlyingType == Date {
     public var date: Expression<Date> {
-        return Expression<Date>("date(\(template), 'unixepoch')", bindings)
+        Expression<Date>("date(\(template), 'unixepoch')", bindings)
     }
 
     public var time: Expression<Date> {
-        return Expression<Date>("time(\(template), 'unixepoch')", bindings)
+        Expression<Date>("time(\(template), 'unixepoch')", bindings)
     }
 
     public var datetime: Expression<Date> {
-        return Expression<Date>("datetime(\(template), 'unixepoch')", bindings)
+        Expression<Date>("datetime(\(template), 'unixepoch')", bindings)
     }
 
     public var julianday: Expression<Date> {
-        return Expression<Date>("julianday(\(template), 'unixepoch')", bindings)
+        Expression<Date>("julianday(\(template), 'unixepoch')", bindings)
     }
 }

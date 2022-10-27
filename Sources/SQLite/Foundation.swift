@@ -24,25 +24,23 @@
 
 import Foundation
 
-extension Data : SafeValue {
+extension Data: SafeValue {
 
     public static var declaredDatatype: String {
-        return Blob.declaredDatatype
+        Blob.declaredDatatype
     }
 
     public static func fromDatatypeValue(_ dataValue: Blob) -> Data {
-        return Data(dataValue.bytes)
+        dataValue.data as Data
     }
 
     public var datatypeValue: Blob {
-        return withUnsafeBytes { (pointer: UnsafeRawBufferPointer) -> Blob in
-            return Blob(bytes: pointer.baseAddress!, length: count)
-        }
+        Blob(data: self as NSData)
     }
 
 }
 
-extension Date : SafeValue {
+extension Date: SafeValue {
 
     public static var declaredDatatype: String {
         return Double.declaredDatatype
@@ -60,7 +58,7 @@ extension Date : SafeValue {
 
 }
 
-extension URL : RiskyValue {
+extension URL: RiskyValue {
     
     public enum URLRiskyValueError: Error {
         case urlFromStringFailed(String)
@@ -73,12 +71,54 @@ extension URL : RiskyValue {
     }
 
     public static var declaredDatatype: String {
-        return String.declaredDatatype
+        String.declaredDatatype
     }
 
     public static func fromDatatypeValue(_ datatypeValue: String) throws -> URL {
         guard let url = URL(string: datatypeValue) else { throw URLRiskyValueError.urlFromStringFailed(datatypeValue) }
         return url
+    }
+}
+
+/// A global date formatter used to serialize and deserialize `NSDate` objects.
+/// If multiple date formats are used in an application’s database(s), use a
+/// custom `Value` type per additional format.
+public var dateFormatter: DateFormatter = {
+    let formatter = DateFormatter()
+    formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ss.SSS"
+    formatter.locale = Locale(identifier: "en_US_POSIX")
+    formatter.timeZone = TimeZone(secondsFromGMT: 0)
+    return formatter
+}()
+
+extension UUID: SafeValue {
+
+    public static var declaredDatatype: String {
+        String.declaredDatatype
+    }
+
+    public static func fromDatatypeValue(_ stringValue: String) -> UUID {
+        UUID(uuidString: stringValue)!
+    }
+
+    public var datatypeValue: String {
+        uuidString
+    }
+
+}
+
+extension URL: Value {
+
+    public static var declaredDatatype: String {
+        String.declaredDatatype
+    }
+
+    public static func fromDatatypeValue(_ stringValue: String) -> URL {
+        URL(string: stringValue)!
+    }
+
+    public var datatypeValue: String {
+        absoluteString
     }
 
 }

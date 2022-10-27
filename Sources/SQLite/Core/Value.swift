@@ -26,7 +26,7 @@ public protocol Value : Expressible {
 
     associatedtype ValueType = Self
 
-    associatedtype Datatype : Binding
+    associatedtype Datatype: Binding
 
     static var declaredDatatype: String { get }
 
