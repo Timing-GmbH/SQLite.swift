@@ -348,7 +348,7 @@ class QueryTests: XCTestCase {
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\")
-             VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F')
+             VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F')
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
@@ -367,7 +367,7 @@ class QueryTests: XCTestCase {
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\", \"optional\",
-             \"sub\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F',
+             \"sub\") VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F',
              'optional', '\(encodedJSONString)')
             """.replacingOccurrences(of: "\n", with: ""),
             insert
@@ -420,7 +420,7 @@ class QueryTests: XCTestCase {
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\")
-             VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F') ON CONFLICT (\"string\")
+             VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F') ON CONFLICT (\"string\")
              DO UPDATE SET \"int\" = \"excluded\".\"int\", \"bool\" = \"excluded\".\"bool\",
              \"float\" = \"excluded\".\"float\", \"double\" = \"excluded\".\"double\", \"date\" = \"excluded\".\"date\",
              \"uuid\" = \"excluded\".\"uuid\"
@@ -441,9 +441,9 @@ class QueryTests: XCTestCase {
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\", \"optional\", \"sub\")
-             VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', NULL, NULL),
-             (2, '3', 1, 3.0, 5.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', 'optional', NULL),
-             (3, '4', 1, 3.0, 6.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', NULL, NULL)
+             VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', NULL, NULL),
+             (2, '3', 1, 3.0, 5.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', 'optional', NULL),
+             (3, '4', 1, 3.0, 6.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', NULL, NULL)
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
@@ -471,7 +471,7 @@ class QueryTests: XCTestCase {
         assertSQL(
             """
             UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0,
-             \"date\" = '1970-01-01T00:00:00.000', \"uuid\" = 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'
+             \"date\" = 0.0, \"uuid\" = 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'
             """.replacingOccurrences(of: "\n", with: ""),
             update
         )
@@ -491,7 +491,7 @@ class QueryTests: XCTestCase {
         let expectedPrefix =
             """
             UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0,
-             \"date\" = '1970-01-01T00:00:00.000', \"uuid\" = 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', \"sub\" = '
+             \"date\" = 0.0, \"uuid\" = 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', \"sub\" = '
             """.replacingOccurrences(of: "\n", with: "")
         let expectedSuffix = "'"
 

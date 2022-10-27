@@ -24,7 +24,7 @@ class FTSIntegrationTests: SQLiteTestCase {
         }
 
         for user in try db.prepare(users) {
-            try db.run(index.insert(email <- user[email]))
+			try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
         }
     }
 
@@ -38,7 +38,7 @@ class FTSIntegrationTests: SQLiteTestCase {
         }
 
         for user in try db.prepare(users) {
-            try db.run(index.insert(email <- user[email]))
+            try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
         }
     }
 
@@ -51,14 +51,14 @@ class FTSIntegrationTests: SQLiteTestCase {
     func testMatch() throws {
         try createIndex()
         let matches = Array(try db.prepare(index.match("Paul")))
-        XCTAssertEqual(matches.map { $0[email ]}, ["Paul@example.com"])
+        XCTAssertEqual(try matches.map { try $0.unwrapOrThrow()[email] }, ["Paul@example.com"])
     }
 
     func testMatchPartial() throws {
         try insertUsers("Paula")
         try createIndex()
         let matches = Array(try db.prepare(index.match("Pa*")))
-        XCTAssertEqual(matches.map { $0[email ]}, ["Paul@example.com", "Paula@example.com"])
+        XCTAssertEqual(try matches.map { try $0.unwrapOrThrow()[email] }, ["Paul@example.com", "Paula@example.com"])
     }
 
     func testTrigramIndex() throws {

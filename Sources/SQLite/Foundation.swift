@@ -58,28 +58,6 @@ extension Date: SafeValue {
 
 }
 
-extension URL: RiskyValue {
-    
-    public enum URLRiskyValueError: Error {
-        case urlFromStringFailed(String)
-    }
-
-    public typealias Datatype = String
-
-    public var datatypeValue: String {
-        return absoluteString
-    }
-
-    public static var declaredDatatype: String {
-        String.declaredDatatype
-    }
-
-    public static func fromDatatypeValue(_ datatypeValue: String) throws -> URL {
-        guard let url = URL(string: datatypeValue) else { throw URLRiskyValueError.urlFromStringFailed(datatypeValue) }
-        return url
-    }
-}
-
 /// A global date formatter used to serialize and deserialize `NSDate` objects.
 /// If multiple date formats are used in an application’s database(s), use a
 /// custom `Value` type per additional format.
@@ -107,18 +85,24 @@ extension UUID: SafeValue {
 
 }
 
-extension URL: Value {
+extension URL: RiskyValue {
 
-    public static var declaredDatatype: String {
-        String.declaredDatatype
-    }
+	public enum URLRiskyValueError: Error {
+		case urlFromStringFailed(String)
+	}
 
-    public static func fromDatatypeValue(_ stringValue: String) -> URL {
-        URL(string: stringValue)!
-    }
+	public typealias Datatype = String
 
-    public var datatypeValue: String {
-        absoluteString
-    }
+	public var datatypeValue: String {
+		return absoluteString
+	}
 
+	public static var declaredDatatype: String {
+		String.declaredDatatype
+	}
+
+	public static func fromDatatypeValue(_ datatypeValue: String) throws -> URL {
+		guard let url = URL(string: datatypeValue) else { throw URLRiskyValueError.urlFromStringFailed(datatypeValue) }
+		return url
+	}
 }

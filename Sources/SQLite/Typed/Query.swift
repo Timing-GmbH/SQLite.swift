@@ -290,7 +290,7 @@ extension QueryType {
     ///   - condition: A boolean expression describing the join condition.
     ///
     /// - Returns: A query with the given `JOIN` clause applied.
-    public func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool>) -> Self {
+    public func join(_ type: JoinType, _ table: QueryType, on condition: Expression<Bool?>) -> Self {
         var query = self
         query.clauses.join.append((type: type, query: table,
                                           condition: table.clauses.filters.map { condition && $0 } ?? condition as Expressible))
@@ -311,7 +311,7 @@ extension QueryType {
     ///
     /// - Returns: A query with the given `WHERE` clause applied.
     public func filter(_ predicate: Expression<Bool>) -> Self {
-        filter(Expression<Bool>(predicate))
+        filter(Expression<Bool?>(predicate))
     }
 
     /// Adds a condition to the query’s `WHERE` clause.
@@ -327,7 +327,7 @@ extension QueryType {
     /// - Returns: A query with the given `WHERE` clause applied.
     public func filter(_ predicate: Expression<Bool?>) -> Self {
         var query = self
-        query.clauses.filters = query.clauses.filters.map { $0 && predicate } ?? predicate
+		query.clauses.filters = query.clauses.filters.map { $0 && predicate } ?? predicate
         return query
     }
 
@@ -343,83 +343,82 @@ extension QueryType {
         filter(predicate)
     }
 
-    // MARK: GROUP BY
+	// MARK: GROUP BY
+	/// Sets a `GROUP BY` clause on the query.
+	///
+	/// - Parameter by: A list of columns to group by.
+	///
+	/// - Returns: A query with the given `GROUP BY` clause applied.
+	public func group(_ by: Expressible...) -> Self {
+		group(by)
+	}
 
-    /// Sets a `GROUP BY` clause on the query.
-    ///
-    /// - Parameter by: A list of columns to group by.
-    ///
-    /// - Returns: A query with the given `GROUP BY` clause applied.
-    public func group(_ by: Expressible...) -> Self {
-        group(by)
-    }
+	/// Sets a `GROUP BY` clause on the query.
+	///
+	/// - Parameter by: A list of columns to group by.
+	///
+	/// - Returns: A query with the given `GROUP BY` clause applied.
+	public func group(_ by: [Expressible]) -> Self {
+		group(by, nil)
+	}
 
-    /// Sets a `GROUP BY` clause on the query.
-    ///
-    /// - Parameter by: A list of columns to group by.
-    ///
-    /// - Returns: A query with the given `GROUP BY` clause applied.
-    public func group(_ by: [Expressible]) -> Self {
-        group(by, nil)
-    }
+	/// Sets a `GROUP BY`-`HAVING` clause on the query.
+	///
+	/// - Parameters:
+	///
+	///   - by: A column to group by.
+	///
+	///   - having: A condition determining which groups are returned.
+	///
+	/// - Returns: A query with the given `GROUP BY`–`HAVING` clause applied.
+	public func group(_ by: Expressible, having: Expression<Bool>) -> Self {
+		group([by], having: having)
+	}
 
-    /// Sets a `GROUP BY`-`HAVING` clause on the query.
-    ///
-    /// - Parameters:
-    ///
-    ///   - by: A column to group by.
-    ///
-    ///   - having: A condition determining which groups are returned.
-    ///
-    /// - Returns: A query with the given `GROUP BY`–`HAVING` clause applied.
-    public func group(_ by: Expressible, having: Expression<Bool>) -> Self {
-        group([by], having: having)
-    }
+	/// Sets a `GROUP BY`-`HAVING` clause on the query.
+	///
+	/// - Parameters:
+	///
+	///   - by: A column to group by.
+	///
+	///   - having: A condition determining which groups are returned.
+	///
+	/// - Returns: A query with the given `GROUP BY`–`HAVING` clause applied.
+	public func group(_ by: Expressible, having: Expression<Bool?>) -> Self {
+		group([by], having: having)
+	}
 
-    /// Sets a `GROUP BY`-`HAVING` clause on the query.
-    ///
-    /// - Parameters:
-    ///
-    ///   - by: A column to group by.
-    ///
-    ///   - having: A condition determining which groups are returned.
-    ///
-    /// - Returns: A query with the given `GROUP BY`–`HAVING` clause applied.
-    public func group(_ by: Expressible, having: Expression<Bool?>) -> Self {
-        group([by], having: having)
-    }
+	/// Sets a `GROUP BY`-`HAVING` clause on the query.
+	///
+	/// - Parameters:
+	///
+	///   - by: A list of columns to group by.
+	///
+	///   - having: A condition determining which groups are returned.
+	///
+	/// - Returns: A query with the given `GROUP BY`–`HAVING` clause applied.
+	public func group(_ by: [Expressible], having: Expression<Bool>) -> Self {
+		group(by, Expression<Bool?>(having))
+	}
 
-    /// Sets a `GROUP BY`-`HAVING` clause on the query.
-    ///
-    /// - Parameters:
-    ///
-    ///   - by: A list of columns to group by.
-    ///
-    ///   - having: A condition determining which groups are returned.
-    ///
-    /// - Returns: A query with the given `GROUP BY`–`HAVING` clause applied.
-    public func group(_ by: [Expressible], having: Expression<Bool>) -> Self {
-        group(by, Expression<Bool?>(having))
-    }
+	/// Sets a `GROUP BY`-`HAVING` clause on the query.
+	///
+	/// - Parameters:
+	///
+	///   - by: A list of columns to group by.
+	///
+	///   - having: A condition determining which groups are returned.
+	///
+	/// - Returns: A query with the given `GROUP BY`–`HAVING` clause applied.
+	public func group(_ by: [Expressible], having: Expression<Bool?>) -> Self {
+		group(by, having)
+	}
 
-    /// Sets a `GROUP BY`-`HAVING` clause on the query.
-    ///
-    /// - Parameters:
-    ///
-    ///   - by: A list of columns to group by.
-    ///
-    ///   - having: A condition determining which groups are returned.
-    ///
-    /// - Returns: A query with the given `GROUP BY`–`HAVING` clause applied.
-    public func group(_ by: [Expressible], having: Expression<Bool?>) -> Self {
-        group(by, having)
-    }
-
-    fileprivate func group(_ by: [Expressible], _ having: Expression<Bool>?) -> Self {
-        var query = self
-        query.clauses.group = (by, having)
-        return query
-    }
+	fileprivate func group(_ by: [Expressible], _ having: Expression<Bool?>?) -> Self {
+		var query = self
+		query.clauses.group = (by, having)
+		return query
+	}
 
     // MARK: ORDER BY
 
@@ -992,10 +991,10 @@ public struct RowIterator: FailableIterator {
         return elements
     }
 
-    public func compactMap<T>(_ transform: (Element) throws -> T?) throws -> [T] {
+    public func compactMap<T>(_ transform: (WrappedElement) throws -> T?) throws -> [T] {
         var elements = [T]()
         while let row = try failableNext() {
-            guard let element = try transform(row) else { continue }
+			guard let element = try transform(row) else { continue }
             elements.append(element)
         }
         return elements
@@ -1206,7 +1205,7 @@ public struct Row {
                     similar: columnNames.keys.filter(similar).sorted()
                 )
             }
-            return valueAtIndex(columnNames[firstIndex].value)
+            return try valueAtIndex(columnNames[firstIndex].value)
         }
 
         return try valueAtIndex(idx)
@@ -1257,26 +1256,26 @@ public enum OnConflict: String {
 
 public struct QueryClauses {
 
-    var select = (distinct: false, columns: [Expression<Void>(literal: "*") as Expressible])
+	var select = (distinct: false, columns: [Expression<Void>(literal: "*") as Expressible])
 
-    var from: (name: String, alias: String?, database: String?)
+	var from: (name: String, alias: String?, database: String?)
 
-    var join = [(type: JoinType, query: QueryType, condition: Expressible)]()
+	var join = [(type: JoinType, query: QueryType, condition: Expressible)]()
 
-    var filters: Expression<Bool>?
+	var filters: Expression<Bool?>?
 
-    var group: (by: [Expressible], having: Expression<Bool>?)?
+	var group: (by: [Expressible], having: Expression<Bool?>?)?
 
-    var order = [Expressible]()
+	var order = [Expressible]()
 
-    var limit: (length: Int, offset: Int?)?
+	var limit: (length: Int, offset: Int?)?
 
-    var union = [(all: Bool, table: QueryType)]()
+	var union = [(all: Bool, table: QueryType)]()
 
-    var with = WithClauses()
+	var with = WithClauses()
 
-    fileprivate init(_ name: String, alias: String?, database: String?) {
-        from = (name, alias, database)
-    }
+	fileprivate init(_ name: String, alias: String?, database: String?) {
+		from = (name, alias, database)
+	}
 
 }

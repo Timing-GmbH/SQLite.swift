@@ -45,8 +45,9 @@ public class SchemaReader {
         if let type = type {
             query = query.where(SchemaTable.typeColumn == type.rawValue)
         }
-        return try connection.prepare(query).map { row -> ObjectDefinition in
-            guard let type = ObjectDefinition.ObjectType(rawValue: row[SchemaTable.typeColumn]) else {
+        return try connection.prepare(query).map { wrappedRow -> ObjectDefinition in
+			let row = try wrappedRow.unwrapOrThrow()
+			guard let type = ObjectDefinition.ObjectType(rawValue: row[SchemaTable.typeColumn]) else {
                 fatalError("unexpected type")
             }
             return ObjectDefinition(
@@ -69,13 +70,13 @@ public class SchemaReader {
         func columns(name: String) throws -> [String] {
             try connection.prepareRowIterator("PRAGMA index_info(\(name.quote()))")
                 .compactMap { row in
-                    row[IndexInfoTable.nameColumn]
+					row[IndexInfoTable.nameColumn]
                 }
         }
 
         return try connection.prepareRowIterator("PRAGMA index_list(\(table.quote()))")
             .compactMap { row -> IndexDefinition? in
-                let name = row[IndexListTable.nameColumn]
+				let name = row[IndexListTable.nameColumn]
                 guard !name.starts(with: "sqlite_") else {
                     // Indexes SQLite creates implicitly for internal use start with "sqlite_".
                     // See https://www.sqlite.org/fileformat2.html#intschema

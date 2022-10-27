@@ -37,8 +37,8 @@ class SelectTests: SQLiteTestCase {
         ))
 
         try db.prepare(users.select(name, email).join(usersData, on: userID == users[id])).forEach {
-            XCTAssertEqual($0[name], "Joey")
-            XCTAssertEqual($0[email], "Joey@example.com")
+            XCTAssertEqual(try $0.unwrapOrThrow()[name], "Joey")
+            XCTAssertEqual(try $0.unwrapOrThrow()[email], "Joey@example.com")
         }
     }
 }

@@ -264,7 +264,7 @@ extension Array {
 }
 
 extension Statement: FailableIterator {
-    public typealias Element = [Binding?]
+    public typealias WrappedElement = [Binding?]
     public func failableNext() throws -> [Binding?]? {
         try step() ? Array(row) : nil
     }
