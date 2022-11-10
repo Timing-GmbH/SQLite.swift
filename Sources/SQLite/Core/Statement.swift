@@ -271,11 +271,11 @@ extension Statement: FailableIterator {
 }
 
 extension Statement {
-    func prepareRowIterator() -> RowIterator {
+    public func prepareRowIterator() -> RowIterator {
         RowIterator(statement: self, columnNames: columnNameMap)
     }
 
-    var columnNameMap: [String: Int] {
+    public var columnNameMap: [String: Int] {
         var result = [String: Int]()
         for (index, name) in self.columnNames.enumerated() {
             result[name.quote()] = index
