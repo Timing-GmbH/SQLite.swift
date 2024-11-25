@@ -430,34 +430,7 @@ public final class Connection {
     ///
     ///       db.trace { SQL in print(SQL) }
     public func trace(_ callback: ((String) -> Void)?) {
-        if #available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *) {
-            trace_v2(callback)
-        } else {
-            trace_v1(callback)
-        }
-    }
-
-    @available(OSX, deprecated: 10.12)
-    @available(iOS, deprecated: 10.0)
-    @available(watchOS, deprecated: 3.0)
-    @available(tvOS, deprecated: 10.0)
-    fileprivate func trace_v1(_ callback: ((String) -> Void)?) {
-        guard let callback = callback else {
-            sqlite3_trace(handle, nil /* xCallback */, nil /* pCtx */)
-            trace = nil
-            return
-        }
-        let box: Trace = { (pointer: UnsafeRawPointer) in
-            callback(String(cString: pointer.assumingMemoryBound(to: UInt8.self)))
-        }
-        sqlite3_trace(handle, { (context: UnsafeMutableRawPointer?, SQL: UnsafePointer<Int8>?) in
-                    if let context = context, let SQL = SQL {
-                        unsafeBitCast(context, to: Trace.self)(SQL)
-                    }
-            },
-            unsafeBitCast(box, to: UnsafeMutableRawPointer.self)
-        )
-        trace = box
+        trace_v2(callback)
     }
 
     @available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *)
