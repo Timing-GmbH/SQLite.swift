@@ -26,7 +26,7 @@
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif os(Linux)
+#elseif os(Linux) || os(Windows) || os(Android)
 import CSQLite
 #else
 import SQLite3

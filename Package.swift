@@ -1,13 +1,14 @@
-// swift-tools-version:5.3
+// swift-tools-version:5.9
 import PackageDescription
 
 let package = Package(
     name: "SQLite.swift",
     platforms: [
-        .iOS(.v9),
-        .macOS(.v10_10),
-        .watchOS(.v3),
-        .tvOS(.v9)
+        .iOS(.v11),
+        .macOS(.v10_13),
+        .watchOS(.v4),
+        .tvOS(.v11),
+        .visionOS(.v1)
     ],
     products: [
         .library(
@@ -38,9 +39,9 @@ let package = Package(
     ]
 )
 
-#if os(Linux)
+#if os(Linux) || os(Windows) || os(Android)
 package.dependencies = [
-    .package(url: "https://github.com/stephencelis/CSQLite.git", from: "0.0.3")
+    .package(url: "https://github.com/sbooth/CSQLite", from: "3.47.0")
 ]
 package.targets.first?.dependencies += [
     .product(name: "CSQLite", package: "CSQLite")

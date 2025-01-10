@@ -7,7 +7,7 @@ import Dispatch
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif os(Linux)
+#elseif os(Linux) || os(Windows) || os(Android)
 import CSQLite
 #else
 import SQLite3
@@ -109,6 +109,10 @@ class ConnectionTests: SQLiteTestCase {
         XCTAssertEqual(1, db.totalChanges)
         try insertUser("betsy")
         XCTAssertEqual(2, db.totalChanges)
+    }
+
+    func test_useExtendedErrorCodes_returnsFalseDefault() throws {
+        XCTAssertFalse(db.usesExtendedErrorCodes)
     }
 
     func test_prepare_preparesAndReturnsStatements() throws {
