@@ -3,7 +3,7 @@ import XCTest
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif os(Linux)
+#elseif os(Linux) || os(Windows) || os(Android)
 import CSQLite
 #else
 import SQLite3
@@ -364,13 +364,22 @@ class QueryTests: XCTestCase {
         let insert = try emails.insert(value)
         let encodedJSON = try JSONEncoder().encode(value1)
         let encodedJSONString = String(data: encodedJSON, encoding: .utf8)!
-        assertSQL(
+
+        let expectedSQL =
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\", \"optional\",
              \"sub\") VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F',
              'optional', '\(encodedJSONString)')
-            """.replacingOccurrences(of: "\n", with: ""),
-            insert
+            """.replacingOccurrences(of: "\n", with: "")
+
+        // As JSON serialization gives a different result each time, we extract JSON and compare it by deserializing it
+        // and keep comparing the query but with the json replaced by the `JSON` string
+        let (expectedQuery, expectedJSON) = extractAndReplace(expectedSQL, regex: "\\{.*\\}", with: "JSON")
+        let (actualQuery, actualJSON) = extractAndReplace(insert.asSQL(), regex: "\\{.*\\}", with: "JSON")
+        XCTAssertEqual(expectedQuery, actualQuery)
+        XCTAssertEqual(
+            try JSONDecoder().decode(TestCodable.self, from: expectedJSON.data(using: .utf8)!),
+            try JSONDecoder().decode(TestCodable.self, from: actualJSON.data(using: .utf8)!)
         )
     }
     #endif

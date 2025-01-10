@@ -3,7 +3,7 @@ import XCTest
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif os(Linux)
+#elseif os(Linux) || os(Windows) || os(Android)
 import CSQLite
 #else
 import SQLite3
@@ -152,6 +152,33 @@ class QueryIntegrationTests: SQLiteTestCase {
          XCTAssertEqual(values.count, 2)
     }
 
+    func test_insert_custom_encodable_type() throws {
+        struct TestTypeWithOptionalArray: Codable {
+            var myInt: Int
+            var myString: String
+            var myOptionalArray: [Int]?
+        }
+
+        let table = Table("custom_codable")
+        try db.run(table.create { builder in
+            builder.column(Expression<Int?>("myInt"))
+            builder.column(Expression<String?>("myString"))
+            builder.column(Expression<String?>("myOptionalArray"))
+        })
+
+        let customType = TestTypeWithOptionalArray(myInt: 13, myString: "foo", myOptionalArray: [1, 2, 3])
+        try db.run(table.insert(customType))
+        let rows = try db.prepare(table)
+        let values: [TestTypeWithOptionalArray] = try rows.map({ try $0.decode() })
+        XCTAssertEqual(values.count, 1, "return one optional custom type")
+
+        let customTypeWithNil = TestTypeWithOptionalArray(myInt: 123, myString: "String", myOptionalArray: nil)
+        try db.run(table.insert(customTypeWithNil))
+        let rowsNil = try db.prepare(table)
+        let valuesNil: [TestTypeWithOptionalArray] = try rowsNil.map({ try $0.decode() })
+        XCTAssertEqual(valuesNil.count, 2, "return two custom objects, including one that contains a nil optional")
+    }
+
     func test_upsert() throws {
         try XCTSkipUnless(db.satisfiesMinimumVersion(minor: 24))
         let fetchAge = { () throws -> Int? in
@@ -229,6 +256,19 @@ class QueryIntegrationTests: SQLiteTestCase {
         }
     }
 
+    func test_extendedErrorCodes_catchConstraintError() throws {
+        db.usesExtendedErrorCodes = true
+        try db.run(users.insert(email <- "alice@example.com"))
+        do {
+            try db.run(users.insert(email <- "alice@example.com"))
+            XCTFail("expected error")
+        } catch let Result.extendedError(_, extendedCode, _) where extendedCode == 2_067 {
+            // SQLITE_CONSTRAINT_UNIQUE expected
+        } catch let error {
+            XCTFail("unexpected error: \(error)")
+        }
+    }
+
     // https://github.com/stephencelis/SQLite.swift/issues/285
     func test_order_by_random() throws {
         try insertUsers(["a", "b", "c'"])
@@ -275,6 +315,134 @@ class QueryIntegrationTests: SQLiteTestCase {
         )
 
         XCTAssertEqual(21, sum)
+    }
+
+    /// Verify that `*` is properly expanded in a SELECT statement following a WITH clause.
+    func test_with_glob_expansion() throws {
+        let names = Table("names")
+        let name = Expression<String>("name")
+        try db.run(names.create { builder in
+            builder.column(email)
+            builder.column(name)
+        })
+
+        try db.run(users.insert(email <- "alice@example.com"))
+        try db.run(names.insert(email <- "alice@example.com", name <- "Alice"))
+
+        // WITH intermediate AS ( SELECT ... ) SELECT * FROM intermediate
+        let intermediate = Table("intermediate")
+        let rows = try db.prepare(
+            intermediate
+                .with(intermediate,
+                      as: users
+                        .select([id, users[email], name])
+                        .join(names, on: names[email] == users[email])
+                        .where(users[email] == "alice@example.com")
+                     ))
+
+        // There should be at least one row in the result.
+        let row = try XCTUnwrap(rows.makeIterator().next())
+
+        // Verify the column names
+        XCTAssertEqual(row.columnNames.count, 3)
+        XCTAssertNotNil(row[id])
+        XCTAssertNotNil(row[name])
+        XCTAssertNotNil(row[email])
+    }
+
+    func test_select_ntile_function() throws {
+        let users = Table("users")
+
+        try insertUser("Joey")
+        try insertUser("Timmy")
+        try insertUser("Jimmy")
+        try insertUser("Billy")
+
+        let bucket = ntile(1, id.asc)
+        try db.prepare(users.select(id, bucket)).forEach {
+            XCTAssertEqual($0[bucket], 1) // only 1 window
+        }
+    }
+
+    func test_select_cume_dist_function() throws {
+        let users = Table("users")
+
+        try insertUser("Joey")
+        try insertUser("Timmy")
+        try insertUser("Jimmy")
+        try insertUser("Billy")
+
+        let cumeDist = cumeDist(email)
+        let results = try db.prepare(users.select(id, cumeDist)).map {
+            $0[cumeDist]
+        }
+        XCTAssertEqual([0.25, 0.5, 0.75, 1], results)
+    }
+
+    func test_select_window_row_number() throws {
+        let users = Table("users")
+
+        try insertUser("Billy")
+        try insertUser("Jimmy")
+        try insertUser("Joey")
+        try insertUser("Timmy")
+
+        let rowNumber = rowNumber(email.asc)
+        var expectedRowNum = 1
+        try db.prepare(users.select(id, rowNumber)).forEach {
+            // should retrieve row numbers in order of INSERT above
+            XCTAssertEqual($0[rowNumber], expectedRowNum)
+            expectedRowNum += 1
+        }
+    }
+
+    func test_select_window_ranking() throws {
+        let users = Table("users")
+
+        try insertUser("Billy")
+        try insertUser("Jimmy")
+        try insertUser("Joey")
+        try insertUser("Timmy")
+
+        let percentRank = percentRank(email)
+        let actualPercentRank: [Int] = try db.prepare(users.select(id, percentRank)).map {
+            Int($0[percentRank] * 100)
+        }
+        XCTAssertEqual([0, 33, 66, 100], actualPercentRank)
+
+        let rank = rank(email)
+        let actualRank: [Int] = try db.prepare(users.select(id, rank)).map {
+            $0[rank]
+        }
+        XCTAssertEqual([1, 2, 3, 4], actualRank)
+
+        let denseRank = denseRank(email)
+        let actualDenseRank: [Int] = try db.prepare(users.select(id, denseRank)).map {
+            $0[denseRank]
+        }
+        XCTAssertEqual([1, 2, 3, 4], actualDenseRank)
+    }
+
+    func test_select_window_values() throws {
+        let users = Table("users")
+
+        try insertUser("Billy")
+        try insertUser("Jimmy")
+        try insertUser("Joey")
+        try insertUser("Timmy")
+
+        let firstValue = email.firstValue(email.desc)
+        try db.prepare(users.select(id, firstValue)).forEach {
+            XCTAssertEqual($0[firstValue], "Timmy@example.com") // should grab last email alphabetically
+        }
+
+        let lastValue = email.lastValue(email.asc)
+        var row = try db.pluck(users.select(id, lastValue))!
+        XCTAssertEqual(row[lastValue], "Billy@example.com")
+
+        let nthValue = email.value(1, email.asc)
+        row = try db.pluck(users.select(id, nthValue))!
+        XCTAssertEqual(row[nthValue], "Billy@example.com")
     }
 }
 
