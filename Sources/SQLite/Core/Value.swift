@@ -34,6 +34,4 @@ public protocol Value : Expressible {
 
     var datatypeValue: Datatype { get }
 
-    static func fromDatatypeValue(_ datatypeValue: Datatype) throws -> ValueType
-
 }
