@@ -47,8 +47,8 @@ Pod::Spec.new do |s|
     ss.exclude_files = 'Sources/**/Cipher.swift'
 
     ss.xcconfig = {
-      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_STANDALONE',
-      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_SWIFT_STANDALONE=1'
+      'OTHER_SWIFT_FLAGS' => '-DSQLITE_SWIFT_STANDALONE',
+      'GCC_PREPROCESSOR_DEFINITIONS' => 'SQLITE_SWIFT_STANDALONE=1'
     }
     ss.dependency 'sqlite3'
 
@@ -64,8 +64,8 @@ Pod::Spec.new do |s|
   s.subspec 'SQLCipher' do |ss|
     ss.source_files = 'Sources/SQLite/**/*.{c,h,m,swift}'
     ss.xcconfig = {
-      'OTHER_SWIFT_FLAGS' => '$(inherited) -DSQLITE_SWIFT_SQLCIPHER',
-      'GCC_PREPROCESSOR_DEFINITIONS' => '$(inherited) SQLITE_HAS_CODEC=1 SQLITE_SWIFT_SQLCIPHER=1'
+      'OTHER_SWIFT_FLAGS' => '-DSQLITE_SWIFT_SQLCIPHER',
+      'GCC_PREPROCESSOR_DEFINITIONS' => 'SQLITE_HAS_CODEC=1 SQLITE_SWIFT_SQLCIPHER=1'
     }
     ss.dependency 'SQLCipher', '>= 4.0.0'
 
