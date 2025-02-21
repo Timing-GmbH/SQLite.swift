@@ -1201,6 +1201,7 @@ public struct Row {
     public func get<V: Value>(_ column: Expression<V?>) throws -> V? {
         func valueAtIndex(_ idx: Int) throws -> V? {
             guard let value = values[idx] as? V.Datatype else { return nil }
+            // V.ValueType == V, so the case will succeed
             return try V.fromDatatypeValue(value) as? V
         }
 
