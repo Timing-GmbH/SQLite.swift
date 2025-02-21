@@ -206,6 +206,16 @@
 		997DF2AF287FC06D00F8DF95 /* Query+with.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997DF2AD287FC06D00F8DF95 /* Query+with.swift */; };
 		997DF2B0287FC06D00F8DF95 /* Query+with.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997DF2AD287FC06D00F8DF95 /* Query+with.swift */; };
 		997DF2B1287FC06D00F8DF95 /* Query+with.swift in Sources */ = {isa = PBXBuildFile; fileRef = 997DF2AD287FC06D00F8DF95 /* Query+with.swift */; };
+		A92A734E2D686E3E004DE842 /* RiskyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A734D2D686E3E004DE842 /* RiskyValue.swift */; };
+		A92A734F2D686E3E004DE842 /* RiskyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A734D2D686E3E004DE842 /* RiskyValue.swift */; };
+		A92A73502D686E3E004DE842 /* RiskyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A734D2D686E3E004DE842 /* RiskyValue.swift */; };
+		A92A73512D686E3E004DE842 /* RiskyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A734D2D686E3E004DE842 /* RiskyValue.swift */; };
+		A92A73522D686E3E004DE842 /* RiskyValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A734D2D686E3E004DE842 /* RiskyValue.swift */; };
+		A92A73542D686E5D004DE842 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A73532D686E5D004DE842 /* Value.swift */; };
+		A92A73552D686E5D004DE842 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A73532D686E5D004DE842 /* Value.swift */; };
+		A92A73562D686E5D004DE842 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A73532D686E5D004DE842 /* Value.swift */; };
+		A92A73572D686E5D004DE842 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A73532D686E5D004DE842 /* Value.swift */; };
+		A92A73582D686E5D004DE842 /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = A92A73532D686E5D004DE842 /* Value.swift */; };
 		DB58B21128FB864300F8EEA4 /* SchemaReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB58B21028FB864300F8EEA4 /* SchemaReader.swift */; };
 		DB58B21228FB864300F8EEA4 /* SchemaReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB58B21028FB864300F8EEA4 /* SchemaReader.swift */; };
 		DB58B21328FB864300F8EEA4 /* SchemaReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = DB58B21028FB864300F8EEA4 /* SchemaReader.swift */; };
@@ -236,7 +246,7 @@
 		DEB306C72B61CEF500F9D46B /* Connection+Attach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3DF7B78728842972005DD8CA /* Connection+Attach.swift */; };
 		DEB306C82B61CEF500F9D46B /* CustomFunctions.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AFD1C3F06E900AE3E12 /* CustomFunctions.swift */; };
 		DEB306C92B61CEF500F9D46B /* FTS4.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF51C3F06E900AE3E12 /* FTS4.swift */; };
-		DEB306CA2B61CEF500F9D46B /* Value.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF31C3F06E900AE3E12 /* Value.swift */; };
+		DEB306CA2B61CEF500F9D46B /* SafeValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AF31C3F06E900AE3E12 /* SafeValue.swift */; };
 		DEB306CB2B61CEF500F9D46B /* Operators.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247AFF1C3F06E900AE3E12 /* Operators.swift */; };
 		DEB306CC2B61CEF500F9D46B /* Schema.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B011C3F06E900AE3E12 /* Schema.swift */; };
 		DEB306CD2B61CEF500F9D46B /* Query.swift in Sources */ = {isa = PBXBuildFile; fileRef = EE247B001C3F06E900AE3E12 /* Query.swift */; };
@@ -430,6 +440,8 @@
 		64B8E16F2B09748000545AFB /* WindowFunctionsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WindowFunctionsTests.swift; sourceTree = "<group>"; };
 		997DF2AD287FC06D00F8DF95 /* Query+with.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Query+with.swift"; sourceTree = "<group>"; };
 		A121AC451CA35C79005A31D1 /* SQLite.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = SQLite.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		A92A734D2D686E3E004DE842 /* RiskyValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RiskyValue.swift; sourceTree = "<group>"; };
+		A92A73532D686E5D004DE842 /* Value.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Value.swift; sourceTree = "<group>"; };
 		DB58B21028FB864300F8EEA4 /* SchemaReader.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SchemaReader.swift; sourceTree = "<group>"; };
 		DB58B21528FC7C4600F8EEA4 /* SQLiteFeature.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteFeature.swift; sourceTree = "<group>"; };
 		DB7C5DA528D7C9B6006395CF /* SQLiteVersion.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SQLiteVersion.swift; sourceTree = "<group>"; };
@@ -698,9 +710,9 @@
 				EE247AEE1C3F06E900AE3E12 /* Blob.swift */,
 				EE247AEF1C3F06E900AE3E12 /* Connection.swift */,
 				EE247AF21C3F06E900AE3E12 /* Statement.swift */,
-				5038B793258914D40094CEBB /* Value.swift */,
+				A92A73532D686E5D004DE842 /* Value.swift */,
 				EE247AF31C3F06E900AE3E12 /* SafeValue.swift */,
-				50929FCC257F887E00BA4A28 /* RiskyValue.swift */,
+				A92A734D2D686E3E004DE842 /* RiskyValue.swift */,
 				19A1710E73A46D5AC721CDA9 /* Errors.swift */,
 				02A43A9722738CF100FEC494 /* Backup.swift */,
 				19A17E723300E5ED3771DCB5 /* Result.swift */,
@@ -1137,19 +1149,20 @@
 			files = (
 				03A65E801C6BB2FB0062603F /* CoreFunctions.swift in Sources */,
 				49EB68C61F7B3CB400D89D40 /* Coding.swift in Sources */,
-				50929FCF257F887E00BA4A28 /* RiskyValue.swift in Sources */,
 				03A65E761C6BB2E60062603F /* Blob.swift in Sources */,
 				03A65E7D1C6BB2F70062603F /* RTree.swift in Sources */,
 				03A65E7B1C6BB2F70062603F /* SafeValue.swift in Sources */,
 				3DF7B793288449BA005DD8CA /* URIQueryParameter.swift in Sources */,
 				03A65E821C6BB2FB0062603F /* Expression.swift in Sources */,
 				03A65E731C6BB2D80062603F /* Foundation.swift in Sources */,
+				A92A734E2D686E3E004DE842 /* RiskyValue.swift in Sources */,
 				03A65E7F1C6BB2FB0062603F /* Collation.swift in Sources */,
 				03A65E861C6BB2FB0062603F /* Setter.swift in Sources */,
 				3DF7B78A28842972005DD8CA /* Connection+Attach.swift in Sources */,
 				03A65E811C6BB2FB0062603F /* CustomFunctions.swift in Sources */,
 				03A65E7A1C6BB2F70062603F /* Statement.swift in Sources */,
 				64A8EE452B095FBB00F583F7 /* WindowFunctions.swift in Sources */,
+				A92A73562D686E5D004DE842 /* Value.swift in Sources */,
 				03A65E741C6BB2DA0062603F /* Helpers.swift in Sources */,
 				03A65E831C6BB2FB0062603F /* Operators.swift in Sources */,
 				03A65E851C6BB2FB0062603F /* Schema.swift in Sources */,
@@ -1159,7 +1172,6 @@
 				03A65E7E1C6BB2FB0062603F /* AggregateFunctions.swift in Sources */,
 				19A17EC0D68BA8C03288ADF7 /* FTS5.swift in Sources */,
 				19A179E76EA6207669B60C1B /* Cipher.swift in Sources */,
-				5038B796258914D40094CEBB /* Value.swift in Sources */,
 				02A43A9A22738CF100FEC494 /* Backup.swift in Sources */,
 				19A17FF4A10B44D3937C8CAC /* Errors.swift in Sources */,
 				19A1737286A74F3CF7412906 /* DateAndTimeFunctions.swift in Sources */,
@@ -1222,7 +1234,6 @@
 			files = (
 				3DF7B78B28842972005DD8CA /* Connection+Attach.swift in Sources */,
 				49EB68C71F7B3CB400D89D40 /* Coding.swift in Sources */,
-				50929FD0257F887E00BA4A28 /* RiskyValue.swift in Sources */,
 				997DF2B1287FC06D00F8DF95 /* Query+with.swift in Sources */,
 				3D67B3F71DB246D700A4F4C6 /* Foundation.swift in Sources */,
 				3D67B3F81DB246D700A4F4C6 /* Helpers.swift in Sources */,
@@ -1235,10 +1246,12 @@
 				3D67B3EC1DB246D100A4F4C6 /* RTree.swift in Sources */,
 				3D67B3ED1DB246D100A4F4C6 /* FTS5.swift in Sources */,
 				3D67B3EE1DB246D100A4F4C6 /* AggregateFunctions.swift in Sources */,
+				A92A73522D686E3E004DE842 /* RiskyValue.swift in Sources */,
 				3D67B3EF1DB246D100A4F4C6 /* Collation.swift in Sources */,
 				3D67B3F01DB246D100A4F4C6 /* CoreFunctions.swift in Sources */,
 				3D67B3F11DB246D100A4F4C6 /* CustomFunctions.swift in Sources */,
 				3D67B3F21DB246D100A4F4C6 /* Expression.swift in Sources */,
+				A92A73542D686E5D004DE842 /* Value.swift in Sources */,
 				3D67B3F31DB246D100A4F4C6 /* Operators.swift in Sources */,
 				3DF7B794288449BA005DD8CA /* URIQueryParameter.swift in Sources */,
 				3D67B3F41DB246D100A4F4C6 /* Query.swift in Sources */,
@@ -1247,7 +1260,6 @@
 				3D67B3E71DB246BA00A4F4C6 /* Blob.swift in Sources */,
 				3D67B3E81DB246BA00A4F4C6 /* Connection.swift in Sources */,
 				19A179CCF9671E345E5A9811 /* Cipher.swift in Sources */,
-				5038B797258914D40094CEBB /* Value.swift in Sources */,
 				02A43A9B22738CF100FEC494 /* Backup.swift in Sources */,
 				19A17DC282E36C4F41AA440B /* Errors.swift in Sources */,
 				19A173668D948AD4DF1F5352 /* DateAndTimeFunctions.swift in Sources */,
@@ -1278,10 +1290,12 @@
 				DEB306C72B61CEF500F9D46B /* Connection+Attach.swift in Sources */,
 				DEB306C82B61CEF500F9D46B /* CustomFunctions.swift in Sources */,
 				DEB306C92B61CEF500F9D46B /* FTS4.swift in Sources */,
-				DEB306CA2B61CEF500F9D46B /* Value.swift in Sources */,
+				A92A73502D686E3E004DE842 /* RiskyValue.swift in Sources */,
+				DEB306CA2B61CEF500F9D46B /* SafeValue.swift in Sources */,
 				DEB306CB2B61CEF500F9D46B /* Operators.swift in Sources */,
 				DEB306CC2B61CEF500F9D46B /* Schema.swift in Sources */,
 				DEB306CD2B61CEF500F9D46B /* Query.swift in Sources */,
+				A92A73582D686E5D004DE842 /* Value.swift in Sources */,
 				DEB306CE2B61CEF500F9D46B /* Statement.swift in Sources */,
 				DEB306CF2B61CEF500F9D46B /* AggregateFunctions.swift in Sources */,
 				DEB306D02B61CEF500F9D46B /* FTS5.swift in Sources */,
@@ -1346,19 +1360,20 @@
 			files = (
 				EE247B0F1C3F06E900AE3E12 /* CoreFunctions.swift in Sources */,
 				49EB68C41F7B3CB400D89D40 /* Coding.swift in Sources */,
-				50929FCD257F887E00BA4A28 /* RiskyValue.swift in Sources */,
 				EE247B0A1C3F06E900AE3E12 /* RTree.swift in Sources */,
 				EE247B031C3F06E900AE3E12 /* Blob.swift in Sources */,
 				3DF7B791288449BA005DD8CA /* URIQueryParameter.swift in Sources */,
 				EE247B0B1C3F06E900AE3E12 /* Foundation.swift in Sources */,
 				EE247B041C3F06E900AE3E12 /* Connection.swift in Sources */,
 				EE247B111C3F06E900AE3E12 /* Expression.swift in Sources */,
+				A92A73512D686E3E004DE842 /* RiskyValue.swift in Sources */,
 				EE247B0C1C3F06E900AE3E12 /* Helpers.swift in Sources */,
 				EE247B0E1C3F06E900AE3E12 /* Collation.swift in Sources */,
 				EE247B151C3F06E900AE3E12 /* Setter.swift in Sources */,
 				3DF7B78828842972005DD8CA /* Connection+Attach.swift in Sources */,
 				EE247B101C3F06E900AE3E12 /* CustomFunctions.swift in Sources */,
 				64A8EE432B095FBB00F583F7 /* WindowFunctions.swift in Sources */,
+				A92A73552D686E5D004DE842 /* Value.swift in Sources */,
 				EE247B091C3F06E900AE3E12 /* FTS4.swift in Sources */,
 				EE247B081C3F06E900AE3E12 /* SafeValue.swift in Sources */,
 				EE247B121C3F06E900AE3E12 /* Operators.swift in Sources */,
@@ -1368,7 +1383,6 @@
 				EE247B0D1C3F06E900AE3E12 /* AggregateFunctions.swift in Sources */,
 				19A1717B10CC941ACB5533D6 /* FTS5.swift in Sources */,
 				19A171F12AB8B07F2FD7201A /* Cipher.swift in Sources */,
-				5038B794258914D40094CEBB /* Value.swift in Sources */,
 				02A43A9822738CF100FEC494 /* Backup.swift in Sources */,
 				19A1792C0520D4E83C2EB075 /* Errors.swift in Sources */,
 				19A17E29278A12BC4F542506 /* DateAndTimeFunctions.swift in Sources */,
@@ -1431,19 +1445,20 @@
 			files = (
 				EE247B6F1C3F3FEC00AE3E12 /* CoreFunctions.swift in Sources */,
 				49EB68C51F7B3CB400D89D40 /* Coding.swift in Sources */,
-				50929FCE257F887E00BA4A28 /* RiskyValue.swift in Sources */,
 				EE247B651C3F3FEC00AE3E12 /* Blob.swift in Sources */,
 				EE247B6C1C3F3FEC00AE3E12 /* RTree.swift in Sources */,
 				EE247B6A1C3F3FEC00AE3E12 /* SafeValue.swift in Sources */,
 				3DF7B792288449BA005DD8CA /* URIQueryParameter.swift in Sources */,
 				EE247B711C3F3FEC00AE3E12 /* Expression.swift in Sources */,
 				EE247B631C3F3FDB00AE3E12 /* Foundation.swift in Sources */,
+				A92A734F2D686E3E004DE842 /* RiskyValue.swift in Sources */,
 				EE247B6E1C3F3FEC00AE3E12 /* Collation.swift in Sources */,
 				EE247B751C3F3FEC00AE3E12 /* Setter.swift in Sources */,
 				3DF7B78928842972005DD8CA /* Connection+Attach.swift in Sources */,
 				EE247B701C3F3FEC00AE3E12 /* CustomFunctions.swift in Sources */,
 				EE247B691C3F3FEC00AE3E12 /* Statement.swift in Sources */,
 				64A8EE442B095FBB00F583F7 /* WindowFunctions.swift in Sources */,
+				A92A73572D686E5D004DE842 /* Value.swift in Sources */,
 				EE247B641C3F3FDB00AE3E12 /* Helpers.swift in Sources */,
 				EE247B721C3F3FEC00AE3E12 /* Operators.swift in Sources */,
 				EE247B741C3F3FEC00AE3E12 /* Schema.swift in Sources */,
@@ -1453,7 +1468,6 @@
 				EE247B6D1C3F3FEC00AE3E12 /* AggregateFunctions.swift in Sources */,
 				19A1750CEE9B05267995CF3D /* FTS5.swift in Sources */,
 				19A17835FD5886FDC5A3228F /* Cipher.swift in Sources */,
-				5038B795258914D40094CEBB /* Value.swift in Sources */,
 				02A43A9922738CF100FEC494 /* Backup.swift in Sources */,
 				19A17490543609FCED53CACC /* Errors.swift in Sources */,
 				19A17152E32A9585831E3FE0 /* DateAndTimeFunctions.swift in Sources */,
