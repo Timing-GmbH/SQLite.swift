@@ -3,7 +3,7 @@ import XCTest
 import sqlite3
 #elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif os(Linux)
+#elseif os(Linux) || os(Windows) || os(Android)
 import CSQLite
 #else
 import SQLite3
@@ -11,7 +11,7 @@ import SQLite3
 @testable import SQLite
 
 class FTSIntegrationTests: SQLiteTestCase {
-    let email = Expression<String>("email")
+    let email = SQLite.Expression<String>("email")
     let index = VirtualTable("index")
 
     private func createIndex() throws {

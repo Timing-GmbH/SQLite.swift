@@ -90,7 +90,7 @@ API.
 // Wrap everything in a do...catch to handle errors
 do {
     // ...
-    
+
     let stmt = try db.prepare("INSERT INTO users (email) VALUES (?)")
     for email in ["betty@icloud.com", "cathy@icloud.com"] {
         try stmt.run(email)
@@ -119,9 +119,6 @@ interactively, from the Xcode project’s playground.
 
 ## Installation
 
-> _Note:_ Version 0.11.6 and later requires Swift 5 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.2) or greater.
-> Version 0.11.5 requires Swift 4.2 (and [Xcode](https://developer.apple.com/xcode/downloads/) 10.1) or greater.
-
 ### Swift Package Manager
 
 The [Swift Package Manager][] is a tool for managing the distribution of
@@ -131,7 +128,7 @@ Swift code.
 
   ```swift
   dependencies: [
-      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.14.1")
+      .package(url: "https://github.com/stephencelis/SQLite.swift.git", from: "0.15.3")
   ]
   ```
 
@@ -155,7 +152,7 @@ install SQLite.swift with Carthage:
  2. Update your Cartfile to include the following:
 
     ```ruby
-    github "stephencelis/SQLite.swift" ~> 0.14.1
+    github "stephencelis/SQLite.swift" ~> 0.15.3
     ```
 
  3. Run `carthage update` and
@@ -275,7 +272,7 @@ Looking for something else? Try another Swift wrapper (or [FMDB][]):
 [SQLite3]: https://www.sqlite.org
 [SQLite.swift]: https://github.com/stephencelis/SQLite.swift
 
-[GitHubActionBadge]: https://img.shields.io/github/workflow/status/stephencelis/SQLite.swift/Build%20and%20test
+[GitHubActionBadge]: https://img.shields.io/github/actions/workflow/status/stephencelis/SQLite.swift/build.yml?branch=master
 
 [CocoaPodsVersionBadge]: https://img.shields.io/cocoapods/v/SQLite.swift.svg?style=flat
 [CocoaPodsVersionLink]: https://cocoapods.org/pods/SQLite.swift

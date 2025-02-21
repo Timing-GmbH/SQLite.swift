@@ -30,8 +30,8 @@ public protocol Value : Expressible {
 
     static var declaredDatatype: String { get }
 
-    var datatypeValue: Datatype { get }
-
     static func fromDatatypeValue(_ datatypeValue: Datatype) throws -> ValueType
+
+    var datatypeValue: Datatype { get }
 
 }
