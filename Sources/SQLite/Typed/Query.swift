@@ -1003,7 +1003,7 @@ public struct RowIterator: FailableIterator {
 
 extension Connection {
 
-    public func prepare(_ query: QueryType) throws -> AnySequence<ResultOrError<Row>> {
+	public func prepare(_ query: QueryType) throws -> AnySequence<Swift.Result<Row, Error>> {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
 
