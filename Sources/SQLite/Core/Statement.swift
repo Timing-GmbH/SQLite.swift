@@ -205,42 +205,22 @@ extension Statement: Sequence {
         reset(clearBindings: false)
         return self
     }
-
 }
 
-public enum ResultOrError<ResultType> {
-    case success(ResultType)
-    case error(Error)
-    
-    public func map<T>(_ transform: (ResultType) throws -> T) rethrows -> ResultOrError<T> {
-        switch self {
-        case let .success(result): return try .success(transform(result))
-        case let .error(error): return .error(error)
-        }
-    }
-    
-    public func unwrapOrThrow() throws -> ResultType {
-        switch self {
-        case let .success(result): return result
-        case let .error(error): throw error
-        }
-    }
-}
-
-public protocol FailableIterator : IteratorProtocol where Element == ResultOrError<WrappedElement> {
+public protocol FailableIterator : IteratorProtocol where Element == Swift.Result<WrappedElement, Error> {
     associatedtype WrappedElement
     
     func failableNext() throws -> WrappedElement?
 }
 
 extension FailableIterator {
-    public func next() -> ResultOrError<WrappedElement>? {
+	public func next() -> Swift.Result<WrappedElement, Error>? {
         do {
             guard let nextRow = try failableNext()
                 else { return nil }
             return .success(nextRow)
         } catch {
-            return .error(error)
+            return .failure(error)
         }
     }
 }
