@@ -1,7 +1,7 @@
 import XCTest
 import Foundation
 import Dispatch
-@testable import SQLite
+@testable import SQLiteSwift
 
 #if SQLITE_SWIFT_STANDALONE
 import sqlite3
@@ -87,7 +87,7 @@ class ConnectionTests: SQLiteTestCase {
         XCTAssertThrowsError(
             try db.run("INSERT INTO \"users\" (email, age, admin) values ('invalid@example.com', 12, 'invalid')")
         ) { error in
-            if case SQLite.Result.error(_, let code, _) = error {
+            if case SQLiteSwift.Result.error(_, let code, _) = error {
                 XCTAssertEqual(SQLITE_CONSTRAINT, code)
             } else {
                 XCTFail("expected error")
@@ -175,7 +175,7 @@ class ConnectionTests: SQLiteTestCase {
         try backup.step()
 
         let users = try target.prepare("SELECT email FROM users ORDER BY email")
-		XCTAssertEqual(try users.map { try $0.unwrapOrThrow()[0] as? String }, ["alice@example.com", "betsy@example.com"])
+        XCTAssertEqual(try users.map { try $0.unwrapOrThrow()[0] as? String }, ["alice@example.com", "betsy@example.com"])
     }
 
     func test_transaction_beginsAndCommitsTransactions() throws {

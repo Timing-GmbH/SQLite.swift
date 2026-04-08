@@ -8,10 +8,10 @@ import CSQLite
 #else
 import SQLite3
 #endif
-@testable import SQLite
+@testable import SQLiteSwift
 
 class FTSIntegrationTests: SQLiteTestCase {
-    let email = SQLite.Expression<String>("email")
+    let email = SQLiteSwift.Expression<String>("email")
     let index = VirtualTable("index")
 
     private func createIndex() throws {
@@ -24,7 +24,7 @@ class FTSIntegrationTests: SQLiteTestCase {
         }
 
         for user in try db.prepare(users) {
-			try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
+            try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
         }
     }
 

@@ -376,15 +376,15 @@ public final class Connection {
 
         try transaction(savepoint, block, "RELEASE \(savepoint)", or: "ROLLBACK TO \(savepoint)")
     }
-	
+
     fileprivate func transaction(_ begin: String, _ block: () throws -> Void, _ commit: String, or rollback: String) throws {
         return try sync {
             try self.run(begin)
             do {
-				try block()
+                try block()
                 try self.run(commit)
             } catch {
-				_ = try? self.run(rollback)
+                _ = try? self.run(rollback)
                 throw error
             }
         }
@@ -438,7 +438,6 @@ public final class Connection {
         trace_v2(callback)
     }
 
-    @available(iOS 10.0, OSX 10.12, tvOS 10.0, watchOS 3.0, *)
     fileprivate func trace_v2(_ callback: ((String) -> Void)?) {
         guard let callback else {
             // If the X callback is NULL or if the M mask is zero, then tracing is disabled.
