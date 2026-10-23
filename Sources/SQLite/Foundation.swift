@@ -24,7 +24,7 @@
 
 import Foundation
 
-extension Data: Value {
+extension Data: SafeValue {
 
     public static var declaredDatatype: String {
         Blob.declaredDatatype
@@ -42,18 +42,20 @@ extension Data: Value {
 
 }
 
-extension Date: Value {
+extension Date: SafeValue {
 
     public static var declaredDatatype: String {
-        String.declaredDatatype
+        return Double.declaredDatatype
     }
 
-    public static func fromDatatypeValue(_ stringValue: String) -> Date {
-        dateFormatter.date(from: stringValue)!
+    /// - Parameter doubleValue: Time interval since 1970 (Unix Epoch).
+    public static func fromDatatypeValue(_ doubleValue: Double) -> Date {
+        return Date(timeIntervalSince1970: doubleValue)
     }
 
-    public var datatypeValue: String {
-        dateFormatter.string(from: self)
+    /// Time interval since 1970 (Unix Epoch).
+    public var datatypeValue: Double {
+        return timeIntervalSince1970
     }
 
 }
@@ -69,7 +71,7 @@ public let dateFormatter: DateFormatter = {
     return formatter
 }()
 
-extension UUID: Value {
+extension UUID: SafeValue {
 
     public static var declaredDatatype: String {
         String.declaredDatatype
@@ -85,18 +87,24 @@ extension UUID: Value {
 
 }
 
-extension URL: Value {
+extension URL: RiskyValue {
+
+    public enum URLRiskyValueError: Error {
+        case urlFromStringFailed(String)
+    }
+
+    public typealias Datatype = String
+
+    public var datatypeValue: String {
+        return absoluteString
+    }
 
     public static var declaredDatatype: String {
         String.declaredDatatype
     }
 
-    public static func fromDatatypeValue(_ stringValue: String) -> URL {
-        URL(string: stringValue)!
+    public static func fromDatatypeValue(_ datatypeValue: String) throws -> URL {
+        guard let url = URL(string: datatypeValue) else { throw URLRiskyValueError.urlFromStringFailed(datatypeValue) }
+        return url
     }
-
-    public var datatypeValue: String {
-        absoluteString
-    }
-
 }

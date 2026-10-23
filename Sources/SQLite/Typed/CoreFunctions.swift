@@ -474,7 +474,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression appended with a `LIKE` query against
     ///   the given pattern.
-    public func like(_ pattern: String, escape character: Character? = nil) -> Expression<Bool?> {
+    public func like(_ pattern: String, escape character: Character? = nil) -> Expression<Bool> {
         guard let character else {
             return Function.like.infix(self, pattern)
         }
@@ -498,7 +498,7 @@ extension ExpressionType where UnderlyingType == String? {
     ///
     /// - Returns: A copy of the expression appended with a `LIKE` query against
     ///   the given pattern.
-    public func like(_ pattern: Expression<String>, escape character: Character? = nil) -> Expression<Bool?> {
+    public func like(_ pattern: Expression<String>, escape character: Character? = nil) -> Expression<Bool> {
         guard let character else {
             return Function.like.infix(self, pattern)
         }
@@ -699,7 +699,7 @@ extension Collection where Iterator.Element: Value {
     ///
     /// - Returns: A copy of the expression prepended with an `IN` check against
     ///   the collection.
-    public func contains(_ expression: Expression<Iterator.Element?>) -> Expression<Bool?> {
+    public func contains(_ expression: Expression<Iterator.Element?>) -> Expression<Bool> {
         let templates = [String](repeating: "?", count: count).joined(separator: ", ")
         return Function.in.infix(expression, Expression<Void>("(\(templates))", map { $0.datatypeValue }))
     }

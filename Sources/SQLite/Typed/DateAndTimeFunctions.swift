@@ -89,18 +89,18 @@ extension Date {
 
 extension Expression where UnderlyingType == Date {
     public var date: Expression<Date> {
-        Expression<Date>("date(\(template))", bindings)
+        Expression<Date>("date(\(template), 'unixepoch')", bindings)
     }
 
     public var time: Expression<Date> {
-        Expression<Date>("time(\(template))", bindings)
+        Expression<Date>("time(\(template), 'unixepoch')", bindings)
     }
 
     public var datetime: Expression<Date> {
-        Expression<Date>("datetime(\(template))", bindings)
+        Expression<Date>("datetime(\(template), 'unixepoch')", bindings)
     }
 
     public var julianday: Expression<Date> {
-        Expression<Date>("julianday(\(template))", bindings)
+        Expression<Date>("julianday(\(template), 'unixepoch')", bindings)
     }
 }

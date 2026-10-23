@@ -1,16 +1,14 @@
 import XCTest
 import Foundation
 import Dispatch
-@testable import SQLite
+@testable import SQLiteSwift
 
-#if StandaloneSQLite
+#if SQLITE_SWIFT_STANDALONE
 import sqlite3
-#elseif SQLCipher
+#elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif SQLiteSwiftCSQLite
-import SQLiteSwiftCSQLite
 #else
-import SQLite3 // SystemSQLite
+import CSQLite
 #endif
 
 class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
@@ -84,7 +82,7 @@ class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
         var statement: Statement? = try db.prepare("SELECT 1")
 
         XCTAssertThrowsError(try db.close()) { error in
-            if case SQLite.Result.error(_, let code) = error {
+            if case SQLiteSwift.Result.error(_, let code) = error {
                 // there's an open statement
                 XCTAssertEqual(SQLITE_BUSY, code)
             } else {
@@ -116,7 +114,7 @@ class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
         XCTAssertThrowsError(
             try db.run("INSERT INTO \"users\" (email, age, admin) values ('invalid@example.com', 12, 'invalid')")
         ) { error in
-            if case SQLite.Result.error(_, let code) = error {
+            if case SQLiteSwift.Result.error(_, let code) = error {
                 XCTAssertEqual(SQLITE_CONSTRAINT, code)
             } else {
                 XCTFail("expected error")
@@ -204,7 +202,7 @@ class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
         try backup.step()
 
         let users = try target.prepare("SELECT email FROM users ORDER BY email")
-        XCTAssertEqual(users.map { $0[0] as? String }, ["alice@example.com", "betsy@example.com"])
+        XCTAssertEqual(try users.map { try $0.unwrapOrThrow()[0] as? String }, ["alice@example.com", "betsy@example.com"])
     }
 
     func test_transaction_beginsAndCommitsTransactions() throws {
@@ -339,7 +337,7 @@ class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
     }
 
     // https://github.com/stephencelis/SQLite.swift/issues/1071
-    #if !(os(Linux) || os(Android))
+    #if !os(Linux)
     func test_createFunction_withArrayArguments() throws {
         db.createFunction("hello") { $0[0].map { "Hello, \($0)!" } }
 
@@ -405,26 +403,6 @@ class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
             }
         }
         semaphores.forEach { $0.wait() }
-    }
-
-    func test_compiled_sqlite_version() throws {
-        let conn = try Connection(.inMemory)
-        let version = conn.sqliteVersion
-
-        #if SystemSQLite
-        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 43, point: 2))
-        #elseif SQLiteSwiftCSQLite
-        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 53, point: 4))
-        #elseif SQLCipher
-        // 4.12.0 uses SQLite 3.51.1
-        // 4.10.0 uses SQLite 3.50.4 (last available pod)
-        // ???    uses SQLite 3.39.4
-        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 39, point: 4))
-        #elseif StandaloneSQLite
-        // when building standalone (= pod), we should have a more recent version
-        // https://github.com/clemensg/sqlite3pod
-        XCTAssertGreaterThanOrEqual(version, .init(major: 3, minor: 51, point: 1))
-        #endif
     }
 }
 

@@ -1,9 +1,15 @@
 import XCTest
-@testable import SQLite
+#if SQLITE_SWIFT_STANDALONE
+import sqlite3
+#elseif SQLITE_SWIFT_SQLCIPHER
+import SQLCipher
+#else
+import CSQLite
+#endif
+@testable import SQLiteSwift
 
-// Note: these tests are only run when the FTS5 trait has been enabled.
-class FTS5IntegrationTests: SQLiteTestCase {
-    let email = SQLite.Expression<String>("email")
+class FTSIntegrationTests: SQLiteTestCase {
+    let email = SQLiteSwift.Expression<String>("email")
     let index = VirtualTable("index")
 
     private func createIndex() throws {
@@ -16,7 +22,7 @@ class FTS5IntegrationTests: SQLiteTestCase {
         }
 
         for user in try db.prepare(users) {
-            try db.run(index.insert(email <- user[email]))
+            try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
         }
     }
 
@@ -30,7 +36,7 @@ class FTS5IntegrationTests: SQLiteTestCase {
         }
 
         for user in try db.prepare(users) {
-            try db.run(index.insert(email <- user[email]))
+            try db.run(index.insert(email <- try user.unwrapOrThrow()[email]))
         }
     }
 
@@ -43,14 +49,14 @@ class FTS5IntegrationTests: SQLiteTestCase {
     func testMatch() throws {
         try createIndex()
         let matches = Array(try db.prepare(index.match("Paul")))
-        XCTAssertEqual(matches.map { $0[email ]}, ["Paul@example.com"])
+        XCTAssertEqual(try matches.map { try $0.unwrapOrThrow()[email] }, ["Paul@example.com"])
     }
 
     func testMatchPartial() throws {
         try insertUsers("Paula")
         try createIndex()
         let matches = Array(try db.prepare(index.match("Pa*")))
-        XCTAssertEqual(matches.map { $0[email ]}, ["Paul@example.com", "Paula@example.com"])
+        XCTAssertEqual(try matches.map { try $0.unwrapOrThrow()[email] }, ["Paul@example.com", "Paula@example.com"])
     }
 
     func testTrigramIndex() throws {
@@ -61,8 +67,8 @@ class FTS5IntegrationTests: SQLiteTestCase {
 
     func testWeightedBM25ChangesResultOrder() throws {
         let articles = VirtualTable("articles")
-        let title = SQLite.Expression<String>("title")
-        let body = SQLite.Expression<String>("body")
+        let title = SQLiteSwift.Expression<String>("title")
+        let body = SQLiteSwift.Expression<String>("body")
         try createOrSkip { db in
             try db.run(articles.create(.FTS5(FTS5Config().columns([title, body]))))
         }
@@ -71,17 +77,20 @@ class FTS5IntegrationTests: SQLiteTestCase {
         try db.run(articles.insert(title <- "other", body <- "swift swift"))
 
         let titleFirst = try db.prepare(articles.match("swift").order(articles.bm25(10.0, 1.0)))
-        XCTAssertEqual(titleFirst.map { $0[title] }, ["swift swift", "other"])
+        XCTAssertEqual(try titleFirst.map { try $0.unwrapOrThrow()[title] }, ["swift swift", "other"])
 
         let bodyFirst = try db.prepare(articles.match("swift").order(articles.bm25(1.0, 10.0)))
-        XCTAssertEqual(bodyFirst.map { $0[title] }, ["other", "swift swift"])
+        XCTAssertEqual(try bodyFirst.map { try $0.unwrapOrThrow()[title] }, ["other", "swift swift"])
     }
 
     private func createOrSkip(_ createIndex: (Connection) throws -> Void) throws {
-        #if FTS5
-        try createIndex(db)
-        #else
-        throw XCTSkip("FTS5 is not enabled")
-        #endif
+        do {
+            try createIndex(db)
+        } catch let error as Result {
+            try XCTSkipIf(error.description.starts(with: "no such module:") ||
+                          error.description.starts(with: "parse error")
+            )
+            throw error
+        }
     }
 }

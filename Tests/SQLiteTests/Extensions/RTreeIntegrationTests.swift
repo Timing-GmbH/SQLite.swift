@@ -1,5 +1,5 @@
 import XCTest
-import SQLite
+import SQLiteSwift
 
 class RTreeIntegrationTests: SQLiteTestCase {
     public func testBasic() throws {
@@ -31,7 +31,7 @@ class RTreeIntegrationTests: SQLiteTestCase {
                            AND minY<=35.37785  AND maxY>=35.37785;
                            """)
 
-            let ids = result.compactMap({ row in row[0] as? Int64 })
+            let ids = try result.compactMap({ row in try row.unwrapOrThrow()[0] as? Int64 })
             XCTAssertEqual(ids, [28269])
         }
     }

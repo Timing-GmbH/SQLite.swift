@@ -1,6 +1,14 @@
 import XCTest
 import Foundation
-@testable import SQLite
+@testable import SQLiteSwift
+
+#if SQLITE_SWIFT_STANDALONE
+import sqlite3
+#elseif SQLITE_SWIFT_SQLCIPHER
+import SQLCipher
+#else
+import CSQLite
+#endif
 
 class ConnectionPragmaTests: SQLiteTestCase {
     func test_userVersion() {

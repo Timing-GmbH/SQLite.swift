@@ -1,6 +1,6 @@
 import XCTest
 import Foundation
-@testable import SQLite
+@testable import SQLiteSwift
 
 #if !os(Android)
 // this fails on Android with

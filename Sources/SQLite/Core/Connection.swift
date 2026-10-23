@@ -24,14 +24,12 @@
 
 import Foundation
 import Dispatch
-#if StandaloneSQLite
+#if SQLITE_SWIFT_STANDALONE
 import sqlite3
-#elseif SQLCipher
+#elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif SQLiteSwiftCSQLite
-import SQLiteSwiftCSQLite
 #else
-import SQLite3 // SystemSQLite
+import CSQLite
 #endif
 
 /// A connection to SQLite.
@@ -708,7 +706,7 @@ public final class Connection {
 
     // MARK: - Error Handling
 
-    func sync<T>(_ block: () throws -> T) rethrows -> T {
+    public func sync<T>(_ block: () throws -> T) rethrows -> T {
         if DispatchQueue.getSpecific(key: Connection.queueKey) == queueContext {
             return try block()
         } else {
@@ -742,9 +740,11 @@ extension Connection {
                 try block()
                 try self.run(commit)
             } catch {
-                try self.run(rollback)
-                if let cleanup {
-                    try self.run(cleanup)
+                // TR-2083: a failing rollback must not replace the error that caused it. The cleanup (releasing a
+                // rolled-back savepoint) runs only after a rollback that worked: after a failed one, releasing the
+                // savepoint would keep its changes.
+                if (try? self.run(rollback)) != nil, let cleanup {
+                    _ = try? self.run(cleanup)
                 }
                 throw error
             }

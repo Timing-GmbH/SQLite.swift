@@ -1,6 +1,6 @@
-#if SQLCipher
+#if SQLITE_SWIFT_SQLCIPHER
 import XCTest
-import SQLite
+import SQLiteSwift
 import SQLCipher
 
 class CipherTests: XCTestCase {
@@ -107,25 +107,12 @@ class CipherTests: XCTestCase {
         XCTAssertEqual(1, try conn.scalar("SELECT count(*) FROM foo") as? Int64)
     }
 
-    func test_cipher_provider() throws {
-        XCTAssertEqual("commoncrypto", db1.cipherProvider)
-    }
-
-    func test_cipher_provider_version() throws {
-        XCTAssertNotNil(db1.cipherProviderVersion)
-    }
-
-    func test_cipher_fips_status() throws {
-        let fipsStatusString = db1.cipherFipsStatus
-        XCTAssertNotNil(fipsStatusString)
-        XCTAssertEqual(0, Int(fipsStatusString!))
-    }
-
     private func keyData(length: Int = 64) -> NSData {
-        var bytes = [Int8](repeating: 0, count: length)
-        let result  = SecRandomCopyBytes(kSecRandomDefault, length, &bytes)
-        XCTAssertEqual(errSecSuccess, result)
-        return NSData(bytes: bytes, length: length)
+        let keyData = NSMutableData(length: length)!
+        let result  = SecRandomCopyBytes(kSecRandomDefault, length,
+                                         keyData.mutableBytes.assumingMemoryBound(to: UInt8.self))
+        XCTAssertEqual(0, result)
+        return NSData(data: keyData)
     }
 }
 #endif

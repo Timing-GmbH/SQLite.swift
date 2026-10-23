@@ -1,22 +1,29 @@
 import XCTest
-@testable import SQLite
+#if SQLITE_SWIFT_STANDALONE
+import sqlite3
+#elseif SQLITE_SWIFT_SQLCIPHER
+import SQLCipher
+#else
+import CSQLite
+#endif
+@testable import SQLiteSwift
 
 class QueryTests: XCTestCase {
 
     let users = Table("users")
-    let id = SQLite.Expression<Int64>("id")
-    let email = SQLite.Expression<String>("email")
-    let age = SQLite.Expression<Int?>("age")
-    let admin = SQLite.Expression<Bool>("admin")
-    let optionalAdmin = SQLite.Expression<Bool?>("admin")
+    let id = SQLiteSwift.Expression<Int64>("id")
+    let email = SQLiteSwift.Expression<String>("email")
+    let age = SQLiteSwift.Expression<Int?>("age")
+    let admin = SQLiteSwift.Expression<Bool>("admin")
+    let optionalAdmin = SQLiteSwift.Expression<Bool?>("admin")
 
     let posts = Table("posts")
-    let userId = SQLite.Expression<Int64>("user_id")
-    let categoryId = SQLite.Expression<Int64>("category_id")
-    let published = SQLite.Expression<Bool>("published")
+    let userId = SQLiteSwift.Expression<Int64>("user_id")
+    let categoryId = SQLiteSwift.Expression<Int64>("category_id")
+    let published = SQLiteSwift.Expression<Bool>("published")
 
     let categories = Table("categories")
-    let tag = SQLite.Expression<String>("tag")
+    let tag = SQLiteSwift.Expression<String>("tag")
 
     func test_select_withExpression_compilesSelectClause() {
         assertSQL("SELECT \"email\" FROM \"users\"", users.select(email))
@@ -208,7 +215,7 @@ class QueryTests: XCTestCase {
     }
 
     func test_alias_aliasesTable() {
-        let managerId = SQLite.Expression<Int64>("manager_id")
+        let managerId = SQLiteSwift.Expression<Int64>("manager_id")
 
         let managers = users.alias("managers")
 
@@ -339,7 +346,7 @@ class QueryTests: XCTestCase {
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\")
-             VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F')
+             VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F')
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
@@ -359,7 +366,7 @@ class QueryTests: XCTestCase {
         let expectedSQL =
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\", \"optional\",
-             \"sub\") VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F',
+             \"sub\") VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F',
              'optional', '\(encodedJSONString)')
             """.replacingOccurrences(of: "\n", with: "")
 
@@ -413,14 +420,14 @@ class QueryTests: XCTestCase {
 
     func test_upsert_encodable() throws {
         let emails = Table("emails")
-        let string = SQLite.Expression<String>("string")
+        let string = SQLiteSwift.Expression<String>("string")
         let value = TestCodable(int: 1, string: "2", bool: true, float: 3, double: 4,
                                 date: Date(timeIntervalSince1970: 0), uuid: testUUIDValue, optional: nil, sub: nil)
         let insert = try emails.upsert(value, onConflictOf: string)
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\")
-             VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F') ON CONFLICT (\"string\")
+             VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F') ON CONFLICT (\"string\")
              DO UPDATE SET \"int\" = \"excluded\".\"int\", \"bool\" = \"excluded\".\"bool\",
              \"float\" = \"excluded\".\"float\", \"double\" = \"excluded\".\"double\", \"date\" = \"excluded\".\"date\",
              \"uuid\" = \"excluded\".\"uuid\"
@@ -441,9 +448,9 @@ class QueryTests: XCTestCase {
         assertSQL(
             """
             INSERT INTO \"emails\" (\"int\", \"string\", \"bool\", \"float\", \"double\", \"date\", \"uuid\", \"optional\", \"sub\")
-             VALUES (1, '2', 1, 3.0, 4.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', NULL, NULL),
-             (2, '3', 1, 3.0, 5.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', 'optional', NULL),
-             (3, '4', 1, 3.0, 6.0, '1970-01-01T00:00:00.000', 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', NULL, NULL)
+             VALUES (1, '2', 1, 3.0, 4.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', NULL, NULL),
+             (2, '3', 1, 3.0, 5.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', 'optional', NULL),
+             (3, '4', 1, 3.0, 6.0, 0.0, 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', NULL, NULL)
             """.replacingOccurrences(of: "\n", with: ""),
             insert
         )
@@ -471,7 +478,7 @@ class QueryTests: XCTestCase {
         assertSQL(
             """
             UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0,
-             \"date\" = '1970-01-01T00:00:00.000', \"uuid\" = 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'
+             \"date\" = 0.0, \"uuid\" = 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F'
             """.replacingOccurrences(of: "\n", with: ""),
             update
         )
@@ -491,7 +498,7 @@ class QueryTests: XCTestCase {
         let expectedPrefix =
             """
             UPDATE \"emails\" SET \"int\" = 1, \"string\" = '2', \"bool\" = 1, \"float\" = 3.0, \"double\" = 4.0,
-             \"date\" = '1970-01-01T00:00:00.000', \"uuid\" = 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', \"sub\" = '
+             \"date\" = 0.0, \"uuid\" = 'E621E1F8-C36C-495A-93FC-0C247A3E6E5F', \"sub\" = '
             """.replacingOccurrences(of: "\n", with: "")
         let expectedSuffix = "'"
 

@@ -62,7 +62,8 @@ public class SchemaReader {
         if let type {
             query = query.where(SchemaTable.typeColumn == type.rawValue)
         }
-        return try connection.prepare(query).map { row -> ObjectDefinition in
+        return try connection.prepare(query).map { wrappedRow -> ObjectDefinition in
+            let row = try wrappedRow.get()
             guard let type = ObjectDefinition.ObjectType(rawValue: row[SchemaTable.typeColumn]) else {
                 fatalError("unexpected type")
             }

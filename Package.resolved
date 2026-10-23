@@ -1,0 +1,14 @@
+{
+  "pins" : [
+    {
+      "identity" : "csqlite",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/Timing-GmbH/CSQLite",
+      "state" : {
+        "branch" : "main",
+        "revision" : "ec34b71c67242687afcf013a84ca8f5c511f2a39"
+      }
+    }
+  ],
+  "version" : 2
+}

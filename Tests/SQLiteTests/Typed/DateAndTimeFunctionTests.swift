@@ -1,5 +1,5 @@
 import XCTest
-@testable import SQLite
+@testable import SQLiteSwift
 
 class DateAndTimeFunctionsTests: XCTestCase {
 
@@ -49,18 +49,18 @@ class DateExtensionTests: XCTestCase {
 
 class DateExpressionTests: XCTestCase {
     func test_date() {
-        assertSQL("date(\"date\")", date.date)
+        assertSQL("date(\"date\", 'unixepoch')", date.date)
     }
 
     func test_time() {
-        assertSQL("time(\"date\")", date.time)
+        assertSQL("time(\"date\", 'unixepoch')", date.time)
     }
 
     func test_datetime() {
-        assertSQL("datetime(\"date\")", date.datetime)
+        assertSQL("datetime(\"date\", 'unixepoch')", date.datetime)
     }
 
     func test_julianday() {
-        assertSQL("julianday(\"date\")", date.julianday)
+        assertSQL("julianday(\"date\", 'unixepoch')", date.julianday)
     }
 }

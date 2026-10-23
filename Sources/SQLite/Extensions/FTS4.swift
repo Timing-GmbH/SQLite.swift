@@ -99,17 +99,17 @@ public struct Tokenizer: Sendable {
         var arguments = [String]()
 
         if let removeDiacritics {
-            arguments.append("remove_diacritics=\(removeDiacritics ? 1 : 0)")
+            arguments.append("remove_diacritics=\(removeDiacritics ? 1 : 0)".quote())
         }
 
         if !tokenchars.isEmpty {
             let joined = tokenchars.map { String($0) }.joined(separator: "")
-            arguments.append("tokenchars=\(joined)")
+            arguments.append("tokenchars=\(joined)".quote())
         }
 
         if !separators.isEmpty {
             let joined = separators.map { String($0) }.joined(separator: "")
-            arguments.append("separators=\(joined)")
+            arguments.append("separators=\(joined)".quote())
         }
 
         return Tokenizer("unicode61", arguments)
@@ -140,11 +140,7 @@ public struct Tokenizer: Sendable {
 extension Tokenizer: CustomStringConvertible {
 
     public var description: String {
-        if arguments.isEmpty {
-            name
-        } else {
-            ([name] + arguments).joined(separator: " ").quote()
-        }
+        ([name] + arguments).joined(separator: " ")
     }
 
 }

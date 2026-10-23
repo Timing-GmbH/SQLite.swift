@@ -1,5 +1,5 @@
 import XCTest
-import SQLite
+import SQLiteSwift
 
 class OperatorsTests: XCTestCase {
 
@@ -356,24 +356,24 @@ class OperatorsTests: XCTestCase {
     }
 
     func test_precedencePreserved() {
-        let n = SQLite.Expression<Int>(value: 1)
+        let n = SQLiteSwift.Expression<Int>(value: 1)
         assertSQL("(((1 = 1) AND (1 = 1)) OR (1 = 1))", (n == n && n == n) || n == n)
         assertSQL("((1 = 1) AND ((1 = 1) OR (1 = 1)))", n == n && (n == n || n == n))
     }
 
     func test_dateExpressionLessGreater() {
         let begin = Date(timeIntervalSince1970: 0)
-        assertSQL("(\"date\" < '1970-01-01T00:00:00.000')", date < begin)
-        assertSQL("(\"date\" > '1970-01-01T00:00:00.000')", date > begin)
-        assertSQL("(\"date\" >= '1970-01-01T00:00:00.000')", date >= begin)
-        assertSQL("(\"date\" <= '1970-01-01T00:00:00.000')", date <= begin)
+        assertSQL("(\"date\" < 0.0)", date < begin)
+        assertSQL("(\"date\" > 0.0)", date > begin)
+        assertSQL("(\"date\" >= 0.0)", date >= begin)
+        assertSQL("(\"date\" <= 0.0)", date <= begin)
     }
 
     func test_dateExpressionRange() {
         let begin = Date(timeIntervalSince1970: 0)
         let end = Date(timeIntervalSince1970: 5000)
         assertSQL(
-            "(\"date\" >= '1970-01-01T00:00:00.000' AND \"date\" < '1970-01-01T01:23:20.000')",
+            "(\"date\" >= 0.0 AND \"date\" < 5000.0)",
             (begin..<end) ~= date
         )
     }
@@ -382,7 +382,7 @@ class OperatorsTests: XCTestCase {
         let begin = Date(timeIntervalSince1970: 0)
         let end = Date(timeIntervalSince1970: 5000)
         assertSQL(
-            "(\"date\" BETWEEN '1970-01-01T00:00:00.000' AND '1970-01-01T01:23:20.000')",
+            "(\"date\" BETWEEN 0.0 AND 5000.0)",
             (begin...end) ~= date
         )
     }

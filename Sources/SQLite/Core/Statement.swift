@@ -22,14 +22,12 @@
 // THE SOFTWARE.
 //
 
-#if StandaloneSQLite
+#if SQLITE_SWIFT_STANDALONE
 import sqlite3
-#elseif SQLCipher
+#elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif SQLiteSwiftCSQLite
-import SQLiteSwiftCSQLite
 #else
-import SQLite3 // SystemSQLite
+import CSQLite
 #endif
 
 /// A single SQL statement.
@@ -208,19 +206,35 @@ extension Statement: Sequence {
 
 }
 
-public protocol FailableIterator: IteratorProtocol {
-    func failableNext() throws -> Self.Element?
+public protocol FailableIterator: IteratorProtocol where Element == Swift.Result<WrappedElement, Error> {
+    associatedtype WrappedElement
+
+    func failableNext() throws -> WrappedElement?
 }
 
+extension FailableIterator {
+    public func next() -> Swift.Result<WrappedElement, Error>? {
+        do {
+            guard let nextRow = try failableNext()
+                else { return nil }
+            return .success(nextRow)
+        } catch {
+            return .failure(error)
+        }
+    }
+}
+
+/*
 extension FailableIterator {
     public func next() -> Element? {
         // swiftlint:disable:next force_try
         try! failableNext()
     }
 }
+ */
 
 extension Array {
-    public init<I: FailableIterator>(_ failableIterator: I) throws where I.Element == Element {
+    public init<I: FailableIterator>(_ failableIterator: I) throws where I.WrappedElement == Element {
         self.init()
         while let row = try failableIterator.failableNext() {
             append(row)
@@ -229,18 +243,18 @@ extension Array {
 }
 
 extension Statement: FailableIterator {
-    public typealias Element = [Binding?]
+    public typealias WrappedElement = [Binding?]
     public func failableNext() throws -> [Binding?]? {
         try step() ? Array(row) : nil
     }
 }
 
 extension Statement {
-    func prepareRowIterator() -> RowIterator {
+    public func prepareRowIterator() -> RowIterator {
         RowIterator(statement: self, columnNames: columnNameMap)
     }
 
-    var columnNameMap: [String: Int] {
+    public var columnNameMap: [String: Int] {
         var result = [String: Int]()
         for (index, name) in self.columnNames.enumerated() {
             result[name.quote()] = index

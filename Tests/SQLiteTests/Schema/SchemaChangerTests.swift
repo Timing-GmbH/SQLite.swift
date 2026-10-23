@@ -1,5 +1,5 @@
 import XCTest
-@testable import SQLite
+@testable import SQLiteSwift
 
 class SchemaChangerTests: SQLiteTestCase {
     var schemaChanger: SchemaChanger!
@@ -92,7 +92,7 @@ class SchemaChangerTests: SQLiteTestCase {
     }
 
     func test_add_column() throws {
-        let column = SQLite.Expression<String>("new_column")
+        let column = SQLiteSwift.Expression<String>("new_column")
         let newColumn = ColumnDefinition(name: "new_column",
                                          type: .TEXT,
                                          nullable: true,
@@ -278,9 +278,9 @@ class SchemaChangerTests: SQLiteTestCase {
 
     func test_create_table_add_column_expression() throws {
         try schemaChanger.create(table: "foo") { table in
-            table.add(expression: SQLite.Expression<String>("name"))
-            table.add(expression: SQLite.Expression<Int>("age"))
-            table.add(expression: SQLite.Expression<Double?>("salary"))
+            table.add(expression: SQLiteSwift.Expression<String>("name"))
+            table.add(expression: SQLiteSwift.Expression<Int>("age"))
+            table.add(expression: SQLiteSwift.Expression<Double?>("salary"))
         }
 
         let columns = try schema.columnDefinitions(table: "foo")

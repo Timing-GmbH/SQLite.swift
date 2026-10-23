@@ -22,16 +22,7 @@
 // THE SOFTWARE.
 //
 
-/// - Warning: `Binding` is a protocol that SQLite.swift uses internally to
-///   directly map SQLite types to Swift types.
-///
-///   Do not conform custom types to the Binding protocol. See the `Value`
-///   protocol, instead.
-public protocol Binding: Sendable {}
-
-public protocol Number: Binding {}
-
-public protocol Value: Expressible { // extensions cannot have inheritance clauses
+public protocol Value: Expressible {
 
     associatedtype ValueType = Self
 
@@ -42,91 +33,5 @@ public protocol Value: Expressible { // extensions cannot have inheritance claus
     static func fromDatatypeValue(_ datatypeValue: Datatype) throws -> ValueType
 
     var datatypeValue: Datatype { get }
-
-}
-
-extension Double: Number, Value {
-
-    public static let declaredDatatype = "REAL"
-
-    public static func fromDatatypeValue(_ datatypeValue: Double) -> Double {
-        datatypeValue
-    }
-
-    public var datatypeValue: Double {
-        self
-    }
-
-}
-
-extension Int64: Number, Value {
-
-    public static let declaredDatatype = "INTEGER"
-
-    public static func fromDatatypeValue(_ datatypeValue: Int64) -> Int64 {
-        datatypeValue
-    }
-
-    public var datatypeValue: Int64 {
-        self
-    }
-
-}
-
-extension String: Binding, Value {
-
-    public static let declaredDatatype = "TEXT"
-
-    public static func fromDatatypeValue(_ datatypeValue: String) -> String {
-        datatypeValue
-    }
-
-    public var datatypeValue: String {
-        self
-    }
-
-}
-
-extension Blob: Binding, Value {
-
-    public static let declaredDatatype = "BLOB"
-
-    public static func fromDatatypeValue(_ datatypeValue: Blob) -> Blob {
-        datatypeValue
-    }
-
-    public var datatypeValue: Blob {
-        self
-    }
-
-}
-
-// MARK: -
-
-extension Bool: Binding, Value {
-
-    public static let declaredDatatype = Int64.declaredDatatype
-
-    public static func fromDatatypeValue(_ datatypeValue: Int64) -> Bool {
-        datatypeValue != 0
-    }
-
-    public var datatypeValue: Int64 {
-        self ? 1 : 0
-    }
-
-}
-
-extension Int: Number, Value {
-
-    public static let declaredDatatype = Int64.declaredDatatype
-
-    public static func fromDatatypeValue(_ datatypeValue: Int64) -> Int {
-        Int(datatypeValue)
-    }
-
-    public var datatypeValue: Int64 {
-        Int64(self)
-    }
 
 }

@@ -977,7 +977,7 @@ public struct Delete: ExpressionType {
 }
 
 public struct RowIterator: FailableIterator {
-    public typealias Element = Row
+    public typealias WrappedElement = Row
     let statement: Statement
     let columnNames: [String: Int]
 
@@ -985,7 +985,7 @@ public struct RowIterator: FailableIterator {
         try statement.failableNext().flatMap { Row(columnNames, $0) }
     }
 
-    public func map<T>(_ transform: (Element) throws -> T) throws -> [T] {
+    public func map<T>(_ transform: (WrappedElement) throws -> T) throws -> [T] {
         var elements = [T]()
         while let row = try failableNext() {
             elements.append(try transform(row))
@@ -993,7 +993,7 @@ public struct RowIterator: FailableIterator {
         return elements
     }
 
-    public func compactMap<T>(_ transform: (Element) throws -> T?) throws -> [T] {
+    public func compactMap<T>(_ transform: (WrappedElement) throws -> T?) throws -> [T] {
         var elements = [T]()
         while let row = try failableNext() {
             guard let element = try transform(row) else { continue }
@@ -1005,14 +1005,14 @@ public struct RowIterator: FailableIterator {
 
 extension Connection {
 
-    public func prepare(_ query: QueryType) throws -> AnySequence<Row> {
+    public func prepare(_ query: QueryType) throws -> AnySequence<Swift.Result<Row, Error>> {
         let expression = query.expression
         let statement = try prepare(expression.template, expression.bindings)
 
         let columnNames = try columnNamesForQuery(query)
 
         return AnySequence {
-            AnyIterator { statement.next().map { Row(columnNames, $0) } }
+            AnyIterator { statement.next().map { $0.map { Row(columnNames, $0) } } }
         }
     }
 
@@ -1092,7 +1092,7 @@ extension Connection {
 
     public func scalar<V: Value>(_ query: ScalarQuery<V>) throws -> V {
         let expression = query.expression
-        return value(try scalar(expression.template, expression.bindings))
+        return try throwingValue(scalar(expression.template, expression.bindings))
     }
 
     public func scalar<V: Value>(_ query: ScalarQuery<V?>) throws -> V.ValueType? {
@@ -1103,7 +1103,7 @@ extension Connection {
 
     public func scalar<V: Value>(_ query: Select<V>) throws -> V {
         let expression = query.expression
-        return value(try scalar(expression.template, expression.bindings))
+        return try throwingValue(try scalar(expression.template, expression.bindings))
     }
 
     public func scalar<V: Value>(_ query: Select<V?>) throws -> V.ValueType? {

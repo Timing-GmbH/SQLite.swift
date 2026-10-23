@@ -1,15 +1,13 @@
 import XCTest
 import Foundation
-@testable import SQLite
+@testable import SQLiteSwift
 
-#if StandaloneSQLite
+#if SQLITE_SWIFT_STANDALONE
 import sqlite3
-#elseif SQLCipher
+#elseif SQLITE_SWIFT_SQLCIPHER
 import SQLCipher
-#elseif SQLiteSwiftCSQLite
-import SQLiteSwiftCSQLite
 #else
-import SQLite3 // SystemSQLite
+import CSQLite
 #endif
 
 class ConnectionAttachTests: SQLiteTestCase {
@@ -19,7 +17,7 @@ class ConnectionAttachTests: SQLiteTestCase {
         try db.attach(.inMemory, as: schemaName)
 
         let table = Table("attached_users", database: schemaName)
-        let name = SQLite.Expression<String>("string")
+        let name = SQLiteSwift.Expression<String>("string")
 
         // create a table, insert some data
         try db.run(table.create { builder in
@@ -28,7 +26,7 @@ class ConnectionAttachTests: SQLiteTestCase {
         _ = try db.run(table.insert(name <- "test"))
 
         // query data
-        let rows = try db.prepare(table.select(name)).map { $0[name] }
+        let rows = try db.prepare(table.select(name)).map { try $0.unwrapOrThrow()[name] }
         XCTAssertEqual(["test"], rows)
 
         try db.detach(schemaName)
@@ -41,9 +39,9 @@ class ConnectionAttachTests: SQLiteTestCase {
         try db.attach(.uri(testDb, parameters: [.mode(.readOnly)]), as: schemaName)
 
         let table = Table("tests", database: schemaName)
-        let email = SQLite.Expression<String>("email")
+        let email = SQLiteSwift.Expression<String>("email")
 
-        let rows = try db.prepare(table.select(email)).map { $0[email] }
+        let rows = try db.prepare(table.select(email)).map { try $0.unwrapOrThrow()[email] }
         XCTAssertEqual(["foo@bar.com"], rows)
 
         try db.detach(schemaName)
