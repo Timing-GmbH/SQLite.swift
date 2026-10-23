@@ -336,6 +336,41 @@ class ConnectionTests: SQLiteTestCase, @unchecked Sendable {
         XCTAssertEqual(1, try db.scalar(users.count))
     }
 
+    // TR-2083: on some errors SQLite rolls the transaction back itself (here an INSERT OR ROLLBACK that hits a UNIQUE
+    // constraint; also a full disk or an I/O error). The rollback that follows then fails, and must not replace the
+    // error that caused it.
+    func test_transaction_reportsTheErrorThatRolledItBack() throws {
+        try db.run("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+
+        XCTAssertThrowsError(try db.transaction {
+            try db.run("INSERT INTO users (email) VALUES (?)", "betsy@example.com")
+            try db.run("INSERT OR ROLLBACK INTO users (email) VALUES (?)", "alice@example.com")
+        }) { error in
+            guard case let SQLiteSwift.Result.error(message, code) = error else { return XCTFail("\(error)") }
+            XCTAssertEqual(SQLITE_CONSTRAINT, code)
+            XCTAssertEqual("UNIQUE constraint failed: users.email", message)
+        }
+        XCTAssertEqual(1, try db.scalar(users.count))
+    }
+
+    func test_savepoint_reportsTheErrorThatRolledItBack() throws {
+        try db.run("INSERT INTO users (email) VALUES (?)", "alice@example.com")
+
+        XCTAssertThrowsError(try db.savepoint("1") {
+            try db.run("INSERT INTO users (email) VALUES (?)", "betsy@example.com")
+            try db.run("INSERT OR ROLLBACK INTO users (email) VALUES (?)", "alice@example.com")
+        }) { error in
+            guard case let SQLiteSwift.Result.error(message, code) = error else { return XCTFail("\(error)") }
+            XCTAssertEqual(SQLITE_CONSTRAINT, code)
+            XCTAssertEqual("UNIQUE constraint failed: users.email", message)
+        }
+        XCTAssertEqual(1, try db.scalar(users.count))
+        try db.transaction {
+            try db.run("INSERT INTO users (email) VALUES (?)", "betsy@example.com")
+        }
+        XCTAssertEqual(2, try db.scalar(users.count))
+    }
+
     // https://github.com/stephencelis/SQLite.swift/issues/1071
     #if !os(Linux)
     func test_createFunction_withArrayArguments() throws {
